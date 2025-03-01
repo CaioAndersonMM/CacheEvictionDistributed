@@ -7,13 +7,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
+import Src.Database.CacheFIFO;
+
 public class ProxyImpl {
     private int porta;
     private ServerSocket serverProxy;
-
+    private CacheFIFO cache;
 
     public ProxyImpl(int porta) {
         this.porta = porta;
+        this.cache = new CacheFIFO();
         rodar();
     }
 

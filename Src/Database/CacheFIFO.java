@@ -1,6 +1,8 @@
-package Src;
+package Src.Database;
 
 import java.util.LinkedList;
+
+import Src.OrdemServico;
 
 public class CacheFIFO {
     private final int maxSize;
