@@ -1,5 +1,7 @@
 package Src.Server.Impl;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
@@ -38,6 +40,21 @@ public class ProxyImpl {
         }
     }
 
+    public boolean autenticarCliente(String mensagem) {
+        try (BufferedReader br = new BufferedReader(new FileReader("Src/autenticacao.txt"))) {
+            String linha;
+            while ((linha = br.readLine()) != null) {
+                if (linha.equals(mensagem)) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
     private class ClienteThread implements Runnable {
         private Socket cliente;
 
@@ -57,24 +74,20 @@ public class ProxyImpl {
                     System.out.println("Mensagem recebida do cliente: " + mensagem);
 
                     if (mensagem.equals("Novo cliente querendo conexão, envie localização")) {
-                        //Se for mensagem do servidor de localização
+                        // Se for mensagem do servidor de localização
                         String host = InetAddress.getLocalHost().getHostAddress();
                         outCliente.println(host + ":" + porta);
                     } else { // Cliente normal
-                        while (cliente.isConnected()) {
-                            System.out.println("Qual operação deseja realizar?");
-                            System.out.println("1 - Adicionar Ordem de Serviço");
-                            System.out.println("2 - Buscar Ordem de Serviço");
-                            System.out.println("3 - Remover Ordem de Serviço");
-                            System.out.println("4 - Listar Ordem de Serviço");
-                            System.out.println("5 - Sair");
 
-                            int opcao = Integer.parseInt(inCliente.nextLine());
-                            
-                            // Será que vai ficar aqui a lógica de adicionar, buscar, remover e listar?
-                            // Ou será que vai ser em outro lugar?
-
-
+                        if(autenticarCliente(mensagem)){
+                            outCliente.println("Cliente autenticado");
+                            while (true) {
+                                outCliente.println("Qual funcionalidade deseja acessar no sistema?");
+                                String funcionalidade = inCliente.nextLine();
+                            }
+                        } else {
+                            outCliente.println("Credenciais inválidas");
+                            break;
                         }
                     }
                 }
