@@ -9,7 +9,8 @@ import java.util.Scanner;
 public class LocationServerImpl {
     private String proxyHost;
     private int porta, proxyPort;
-    private Socket socket;
+    private Socket socketProxy;
+    private ServerSocket serverLocation;
     private PrintWriter out;
     private Scanner in;
     private boolean proxyAtivo;
@@ -22,16 +23,29 @@ public class LocationServerImpl {
     }
 
     public void rodar() {
-        try (ServerSocket serverLocation = new ServerSocket(porta)) {
-            System.out.println("Servidor de localização rodando na porta " + porta);
+        
+        try {
+            serverLocation = new ServerSocket(porta);
+            System.out.println("Servidor de localização rodando " + serverLocation.getInetAddress().getHostAddress() + ":" + porta);
 
-            socket = new Socket(proxyHost, proxyPort);
-            out = new PrintWriter(socket.getOutputStream(), true);
-            in = new Scanner(socket.getInputStream());
-
-            if (in.nextLine().equals("Conexão estabelecida com o Proxy")) {
-                System.out.println("Servidor de Localização conectado ao Proxy - esperando clientes");
-                proxyAtivo = true;
+            while (socketProxy == null) {
+                try {
+                    socketProxy = new Socket(proxyHost, proxyPort);
+                    out = new PrintWriter(socketProxy.getOutputStream(), true);
+                    in = new Scanner(socketProxy.getInputStream());
+    
+                    if (in.nextLine().equals("Conexão estabelecida com o Proxy")) {
+                        System.out.println("Servidor de Localização conectado ao Proxy - esperando clientes");
+                        proxyAtivo = true;
+                    }
+                } catch (IOException e) {
+                    System.out.println("Proxy não disponível, tentando novamente...");
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException ie) {
+                        ie.printStackTrace();
+                    }
+                }
             }
 
             while (proxyAtivo) {
@@ -62,7 +76,7 @@ public class LocationServerImpl {
     public void fecharConexaoProxy() throws IOException {
         in.close();
         out.close();
-        socket.close();
+        socketProxy.close();
         System.out.println("Conexão com o Proxy fechada");
     }
 
