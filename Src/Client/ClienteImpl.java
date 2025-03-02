@@ -55,7 +55,6 @@ public class ClienteImpl {
                 System.out.println("Conectado ao Proxy " + proxyHost + ":" + proxyPort);
                 Scanner sc = new Scanner(System.in);
 
-                // Recebe resposta do Proxy
                 String resposta = inProxy.nextLine();
                 System.out.println("Resposta do Proxy: " + resposta);
 
@@ -66,11 +65,28 @@ public class ClienteImpl {
 
                 String mensagem = email + ";" + senha;
                 outProxy.println(mensagem);
+
+                resposta = inProxy.nextLine();
+                System.out.println(resposta);
                 
-                while (true) {
-                    // Envia e recebe mensagens do Proxy
-                    System.out.println(inProxy.nextLine());
-                    String funcionalidade = sc.nextLine();
+                if (resposta.equals("Cliente autenticado")) {
+                    while (true) {
+                        try {
+                            System.out.println("Digite a mensagem para enviar ao Proxy (ou 'sair' para encerrar): ");
+                            String funcionalidade = sc.nextLine();
+                            if (funcionalidade.equalsIgnoreCase("sair")) {
+                                break;
+                            }
+                            outProxy.println(funcionalidade);
+                            resposta = inProxy.nextLine();
+                            System.out.println("Resposta do Proxy: " + resposta);
+                        } catch (Exception e) {
+                            System.out.println("Erro: Conexão com o Proxy foi perdida.");
+                            break;
+                        }
+                    }
+                } else {
+                    System.out.println("Autenticação falhou");
                 }
 
             } catch (IOException e) {
