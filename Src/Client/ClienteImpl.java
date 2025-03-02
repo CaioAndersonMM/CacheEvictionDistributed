@@ -21,8 +21,22 @@ public class ClienteImpl {
     public void rodar() {
         System.out.println("Cliente rodando na porta " + port);
 
-        try (Socket locationSocket = new Socket(locationHost, locationPort);
-             PrintWriter outLocation = new PrintWriter(locationSocket.getOutputStream(), true);
+        Socket locationSocket = null;
+
+        while (locationSocket == null) {
+            try {
+                locationSocket = new Socket(locationHost, locationPort);
+            } catch (IOException e) {
+                System.out.println("Servidor de localização não disponível, tentando novamente...");
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException ie) {
+                    ie.printStackTrace();
+                }
+            }
+        }
+
+        try (PrintWriter outLocation = new PrintWriter(locationSocket.getOutputStream(), true);
              Scanner inLocation = new Scanner(locationSocket.getInputStream())) {
 
             outLocation.println("Novo cliente querendo conexão, envie localização");
@@ -53,13 +67,5 @@ public class ClienteImpl {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-        int port = 12346; // Porta do cliente
-        String locationHost = "localhost"; // Host do servidor de localização
-        int locationPort = 12345; // Porta do servidor de localização
-
-        new ClienteImpl(port, locationHost, locationPort);
     }
 }
