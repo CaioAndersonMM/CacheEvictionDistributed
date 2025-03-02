@@ -14,7 +14,6 @@ public class ClienteImpl {
         this.port = port;
         this.locationHost = locationHost;
         this.locationPort = locationPort;
-
         rodar();
     }
 
@@ -29,7 +28,7 @@ public class ClienteImpl {
             } catch (IOException e) {
                 System.out.println("Servidor de localização não disponível, tentando novamente...");
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(1000);
                 } catch (InterruptedException ie) {
                     ie.printStackTrace();
                 }
@@ -54,11 +53,25 @@ public class ClienteImpl {
                  Scanner inProxy = new Scanner(proxySocket.getInputStream())) {
 
                 System.out.println("Conectado ao Proxy " + proxyHost + ":" + proxyPort);
+                Scanner sc = new Scanner(System.in);
 
-                // Envia e recebe mensagens do Proxy
-                outProxy.println("Mensagem do cliente para o Proxy");
+                // Recebe resposta do Proxy
                 String resposta = inProxy.nextLine();
                 System.out.println("Resposta do Proxy: " + resposta);
+
+                System.out.println("Qual seu email? ");
+                String email = sc.nextLine();
+                System.out.println("Qual sua senha? ");
+                String senha = sc.nextLine();
+
+                String mensagem = email + ";" + senha;
+                outProxy.println(mensagem);
+                
+                while (true) {
+                    // Envia e recebe mensagens do Proxy
+                    System.out.println(inProxy.nextLine());
+                    String funcionalidade = sc.nextLine();
+                }
 
             } catch (IOException e) {
                 e.printStackTrace();
