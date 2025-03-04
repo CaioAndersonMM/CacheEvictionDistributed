@@ -1,16 +1,21 @@
 package Src;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Random;
+
 public class OrdemServico {
     private int codigo;
     private String nome;
     private String descricao;
-    private long horaSolicitacao;
+    private String horaSolicitacao;
 
-    public OrdemServico(int codigo, String nome, String descricao, long horaSolicitacao) {
-        this.codigo = codigo;
+    public OrdemServico(String nome, String descricao) {
+        Random random = new Random();
+        this.codigo = random.nextInt(1000);
         this.nome = nome;
         this.descricao = descricao;
-        this.horaSolicitacao = horaSolicitacao;
+         this.horaSolicitacao = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
 
     public int getCodigo() {
@@ -25,7 +30,7 @@ public class OrdemServico {
         return descricao;
     }
 
-    public long getHoraSolicitacao() {
+    public String getHoraSolicitacao() {
         return horaSolicitacao;
     }
 
@@ -41,7 +46,7 @@ public class OrdemServico {
         this.descricao = descricao;
     }
 
-    public void setHoraSolicitacao(long horaSolicitacao) {
+    public void setHoraSolicitacao(String horaSolicitacao) {
         this.horaSolicitacao = horaSolicitacao;
     }
 
@@ -53,11 +58,12 @@ public class OrdemServico {
             "|| Código:      %4d           %n" +
             "|| Nome:        %-15s %n" +
             "|| Descrição:   %-15s %n" +
-            "|| Hora:        %04d          %n" +
+            "|| Hora:        %s          %n" + 
             "+=============================+%n",
             codigo, nome, descricao, horaSolicitacao
         );
     }
+    
 
     public String imprimir() {
         return String.format("{cod = %d | %s} - ", codigo, nome);

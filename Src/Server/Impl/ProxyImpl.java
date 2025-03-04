@@ -9,6 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
+import Src.OrdemServico;
 import Src.Database.CacheFIFO;
 
 public class ProxyImpl {
@@ -83,20 +84,49 @@ public class ProxyImpl {
                             outCliente.println("Cliente autenticado");
                             while (true) {
                                 outCliente.println("Qual funcionalidade deseja acessar no sistema?");
-                                String funcionalidade = inCliente.nextLine();
+                                String requisição = inCliente.nextLine();
+                                System.out.println("Requisição do cliente: " + requisição);
+                                String[] partes = requisição.split(";");
+                                for (String parte : partes) {
+                                    System.out.println(parte + " ");
+                                }
+                               
+                                String funcionalidade = requisição.split(";")[0];
                                 System.out.println("Cliente selecionou a funcionalidade: " + funcionalidade);
                                 switch (funcionalidade) {
                                     case "1":
-                                        outCliente.println("Funcionalidade 1 selecionada");
+                                    outCliente.println("Funcionalidade 1 selecionada");
+                                        String nome = requisição.split(";")[1];
+                                        String descricao = requisição.split(";")[2];
+                                        System.out.println("Nome: " + nome + " Descrição: " + descricao);
+
+                                        OrdemServico os = new OrdemServico(nome, descricao);
+                                        cache.adicionar(os);
                                         break;
                                     case "2":
                                         outCliente.println("Funcionalidade 2 selecionada");
+                                        String listaCache = cache.listarCache();
+                                        System.out.println("Listando cache: \n" + listaCache);
+                                        outCliente.println(listaCache);
                                         break;
                                     case "3":
                                         outCliente.println("Funcionalidade 3 selecionada");
+                                        int codigo = Integer.parseInt(requisição.split(";")[1]);
+                                        String novonome = requisição.split(";")[2];
+                                        String novadescricao = requisição.split(";")[3];
+                                        OrdemServico osn =cache.buscar(codigo);
+                                        if(osn==null){
+                                            outCliente.println("Ordem de serviço não encontrada");
+                                            break;
+                                        }
+                                        osn.setNome(novonome);
+                                        osn.setDescricao(novadescricao);
+
                                         break;
                                     case "4":
                                         outCliente.println("Funcionalidade 4 selecionada");
+                                        int cod = Integer.parseInt(requisição.split(";")[1]);
+                                        cache.remover(cod);
                                         break;
                                     case "5":
                                         outCliente.println("Funcionalidade 5 selecionada");

@@ -14,29 +14,38 @@ public class CacheFIFO {
     }
 
     public void adicionar(OrdemServico os) {
+        synchronized(this){
         if (cache.size() >= maxSize) {
             cache.removeFirst();
         }
         cache.addLast(os);
     }
+    }
 
     public OrdemServico buscar(int codigo) {
+        synchronized(this){
         for (OrdemServico os : cache) {
             if (os.getCodigo() == codigo) { 
                 return os;
             }
         }
+        }
         return null;
     }
 
-    public void listarCache() {
+    public String listarCache() {
+        StringBuilder sb = new StringBuilder();
         for (OrdemServico os : cache) {
-            System.out.println(os);
+            sb.append(os.toString()).append("\n");
         }
+        return sb.toString();
     }
+    
 
     public void remover(int codigo) {
+        synchronized(this){
         cache.removeIf(os -> os.getCodigo() == codigo);
+    }
     }
 
     public String gerarStringCache() {

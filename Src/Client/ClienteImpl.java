@@ -72,12 +72,53 @@ public class ClienteImpl {
 
                 if (resposta.equals("Cliente autenticado")) {
                     while (true) {
+                        System.out.println("Proxy: " + resposta);
                         System.out.println(Menu.exibirMenu());
                         resposta = inProxy.nextLine();
-                        System.out.println("Proxy: " + resposta);
 
                         String opcao = sc.nextLine();
-                        outProxy.println(opcao);
+                        switch(opcao){
+                            case "1":
+                                System.out.println("digite o nome da ordem de serviço: ");
+                                String nome = sc.nextLine();
+                                System.out.println("digite a descrição da ordem de serviço: ");
+                                String descricao = sc.nextLine();
+                                outProxy.println(opcao+";"+nome + ";" + descricao);
+                                break;
+                                case "2":
+                                outProxy.println(opcao);
+                                String respostaCache;
+                                while (!(respostaCache = inProxy.nextLine()).isEmpty()) {
+                                    System.out.println(respostaCache);
+                                }
+                                break;                            
+                            case "3":
+                                System.out.println("digite o código da ordem de serviço que deseja alterar: ");
+                                int codigo = Integer.parseInt(sc.nextLine().trim());
+                                 System.out.println("digite o novo nome da ordem de serviço: ");
+                                nome = sc.nextLine();
+                                System.out.println("digite a nova descrição da ordem de serviço: ");
+                                descricao = sc.nextLine();
+                                outProxy.println(opcao+";"+codigo+";"+nome + ";" + descricao);
+                                break;
+                            case "4":
+                                System.out.println("digite o código da ordem de serviço que deseja excluir: ");
+                                codigo = Integer.parseInt(sc.nextLine().trim());
+                                outProxy.println(opcao+";"+codigo);
+                                break;
+                            case "5":
+                                //ignorar por enquanto
+                                outProxy.println("5");
+                                break;
+                            case "6":
+                            //ignorar por enquanto
+                                outProxy.println("6");
+                                break;
+                            case "0":
+                                outProxy.println("0");
+                                break;
+                            default:
+                                System.out.println("Opção inválida");}
 
                     }
                 } else {
