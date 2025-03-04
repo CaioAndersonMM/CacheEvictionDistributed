@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
+import Src.Menu;
 
 public class ClienteImpl {
     private int port;
@@ -71,24 +72,13 @@ public class ClienteImpl {
 
                 if (resposta.equals("Cliente autenticado")) {
                     while (true) {
-                        try {
-                            System.out.println("Digite a mensagem para enviar ao Proxy (ou 'sair' para encerrar): ");
-                            String funcionalidade = sc.nextLine();
-                            if (funcionalidade.equalsIgnoreCase("sair")) {
-                                break;
-                            }
-                            outProxy.println(funcionalidade);
-                            if (inProxy.hasNextLine()) {
-                                resposta = inProxy.nextLine();
-                                System.out.println("Resposta do Proxy: " + resposta);
-                            } else {
-                                System.out.println("Erro: Conexão com o Proxy foi perdida.");
-                                break;
-                            }
-                        } catch (Exception e) {
-                            System.out.println("Erro: Conexão com o Proxy foi perdida.");
-                            break;
-                        }
+                        System.out.println(Menu.exibirMenu());
+                        resposta = inProxy.nextLine();
+                        System.out.println("Proxy: " + resposta);
+
+                        String opcao = sc.nextLine();
+                        outProxy.println(opcao);
+
                     }
                 } else {
                     System.out.println("Autenticação falhou");

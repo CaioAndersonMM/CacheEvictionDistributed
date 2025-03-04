@@ -79,11 +79,40 @@ public class ProxyImpl {
                         outCliente.println(host + ":" + porta);
                     } else { // Cliente normal
 
-                        if(autenticarCliente(mensagem)){
+                        if (autenticarCliente(mensagem)) {
                             outCliente.println("Cliente autenticado");
                             while (true) {
                                 outCliente.println("Qual funcionalidade deseja acessar no sistema?");
                                 String funcionalidade = inCliente.nextLine();
+                                System.out.println("Cliente selecionou a funcionalidade: " + funcionalidade);
+                                switch (funcionalidade) {
+                                    case "1":
+                                        outCliente.println("Funcionalidade 1 selecionada");
+                                        break;
+                                    case "2":
+                                        outCliente.println("Funcionalidade 2 selecionada");
+                                        break;
+                                    case "3":
+                                        outCliente.println("Funcionalidade 3 selecionada");
+                                        break;
+                                    case "4":
+                                        outCliente.println("Funcionalidade 4 selecionada");
+                                        break;
+                                    case "5":
+                                        outCliente.println("Funcionalidade 5 selecionada");
+                                        break;
+                                    case "6":
+                                        outCliente.println("Funcionalidade 6 selecionada");
+                                        break;
+                                    case "0":
+                                    case "sair":
+                                        outCliente.println("Desconectando...");
+                                        cliente.close();
+                                        return;
+                                    default:
+                                        outCliente.println("Opção inválida, tente novamente.");
+                                        break;
+                                }
                             }
                         } else {
                             outCliente.println("Credenciais inválidas");
