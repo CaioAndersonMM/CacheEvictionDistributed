@@ -36,7 +36,7 @@ public class ClienteImpl {
         }
 
         try (PrintWriter outLocation = new PrintWriter(locationSocket.getOutputStream(), true);
-             Scanner inLocation = new Scanner(locationSocket.getInputStream())) {
+                Scanner inLocation = new Scanner(locationSocket.getInputStream())) {
 
             outLocation.println("Novo cliente querendo conexão, envie localização");
 
@@ -49,11 +49,11 @@ public class ClienteImpl {
             int proxyPort = Integer.parseInt(proxyInfo[1]);
 
             try (Socket proxySocket = new Socket(proxyHost, proxyPort);
-                 PrintWriter outProxy = new PrintWriter(proxySocket.getOutputStream(), true);
-                 Scanner inProxy = new Scanner(proxySocket.getInputStream())) {
+                    PrintWriter outProxy = new PrintWriter(proxySocket.getOutputStream(), true);
+                    Scanner inProxy = new Scanner(proxySocket.getInputStream());
+                    Scanner sc = new Scanner(System.in);) {
 
                 System.out.println("Conectado ao Proxy " + proxyHost + ":" + proxyPort);
-                Scanner sc = new Scanner(System.in);
 
                 String resposta = inProxy.nextLine();
                 System.out.println("Resposta do Proxy: " + resposta);
@@ -68,7 +68,7 @@ public class ClienteImpl {
 
                 resposta = inProxy.nextLine();
                 System.out.println(resposta);
-                
+
                 if (resposta.equals("Cliente autenticado")) {
                     while (true) {
                         try {
@@ -78,8 +78,13 @@ public class ClienteImpl {
                                 break;
                             }
                             outProxy.println(funcionalidade);
-                            resposta = inProxy.nextLine();
-                            System.out.println("Resposta do Proxy: " + resposta);
+                            if (inProxy.hasNextLine()) {
+                                resposta = inProxy.nextLine();
+                                System.out.println("Resposta do Proxy: " + resposta);
+                            } else {
+                                System.out.println("Erro: Conexão com o Proxy foi perdida.");
+                                break;
+                            }
                         } catch (Exception e) {
                             System.out.println("Erro: Conexão com o Proxy foi perdida.");
                             break;
