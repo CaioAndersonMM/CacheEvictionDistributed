@@ -1,37 +1,33 @@
 package Src.Database;
 
-import java.util.HashMap;
-
 import Src.OrdemServico;
 
 public class DatabaseOs {
-    private HashMap<Integer, OrdemServico> database;
+    private TabelaHashEncadementoExterior database;
 
     public DatabaseOs() {
-        this.database = new HashMap<>();
+        this.database = new TabelaHashEncadementoExterior(127);
     }
 
     public void adicionar(OrdemServico os) {
-        database.put(os.getCodigo(), os);
+        database.inserir(os);
     }
 
     public OrdemServico buscar(int codigo) {
-        return database.get(codigo);
+        return database.buscar(codigo);
     }
 
     public boolean remover(int codigo) {
-        return database.remove(codigo) != null;
+        return database.remover(codigo) != null;
     }
 
     public void listarDatabase() {
-        for (OrdemServico os : database.values()) {
-            System.out.println(os);
-        }
+       database.imprimirOSsEmOrdem();
     }
 
     public String gerarStringDatabase() {
         StringBuilder sb = new StringBuilder();
-        for (OrdemServico os : database.values()) {
+        for (OrdemServico os : database) {
             sb.append(os.imprimir()).append(", ");
         }
         return sb.length() > 0 ? sb.substring(0, sb.length() - 2) : "Database vazia";
@@ -42,10 +38,10 @@ public class DatabaseOs {
     }
 
     public boolean existe(int codigo) {
-        return database.containsKey(codigo);
+        return database.buscar(codigo) != null;
     }
 
     public int tamanho() {
-        return database.size();
+        return database.espacosOcupados;
     }
 }
