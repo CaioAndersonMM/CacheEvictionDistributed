@@ -46,12 +46,14 @@ public class ProxyImpl {
 
     public void rodar() {
         try {
-            serverProxy = new ServerSocket(porta);
-            System.out.println("Proxy rodando " + InetAddress.getLocalHost().getHostAddress() + " : " + porta);
+            String localHostAddress = InetAddress.getLocalHost().getHostAddress();
+            serverProxy = new ServerSocket(porta, 50, InetAddress.getByName(localHostAddress));
+            System.out.println("Proxy rodando " + serverProxy.getInetAddress().getHostAddress() + " : " + porta);
 
             while (true) {
                 Socket cliente = serverProxy.accept();
-                System.out.println("Cliente conectado: " + cliente.getInetAddress().getHostAddress());
+
+                System.out.println("Cliente conectado: " + cliente.getInetAddress().getHostAddress()+" : "+cliente.getPort());
 
                 new Thread(new ClienteThread(cliente)).start();
             }
@@ -86,8 +88,9 @@ public class ProxyImpl {
         @Override
         public void run() {
             try (ObjectInputStream inCliente = new ObjectInputStream(cliente.getInputStream());
-                 ObjectOutputStream outCliente = new ObjectOutputStream(cliente.getOutputStream())) {
-                
+                    ObjectOutputStream outCliente = new ObjectOutputStream(cliente.getOutputStream())) {
+
+                System.out.println("Enviando mensagem de conexão ao cliente: "+ cliente.getInetAddress().getHostAddress());
                 outCliente.writeObject("Conexão estabelecida com o Proxy");
 
                 while (true) {
@@ -108,10 +111,10 @@ public class ProxyImpl {
 
                                 String funcionalidade = partes[0];
                                 System.out.println("Cliente selecionou a funcionalidade: " + funcionalidade);
-                                
+
                                 switch (funcionalidade) {
                                     case "1":
-                                        outCliente.writeObject("Funcionalidade 1 selecionada");
+                                        outCliente.writeObject("Funcionalidade - Cadastrar....");
                                         System.out.println(requisicao);
                                         outAppServer.writeObject(requisicao);
                                         outAppServer.flush();
@@ -121,31 +124,48 @@ public class ProxyImpl {
                                         System.out.println("Ordem de Serviço adicionada ao cache: " + resposta);
                                         break;
                                     case "2":
-                                        outCliente.writeObject("Funcionalidade 2 selecionada");
+                                        outCliente.writeObject("Funcionalidade - Listar OS...");
                                         System.out.println(requisicao);
                                         outAppServer.writeObject(requisicao);
                                         outAppServer.flush();
 
                                         String resposta2 = (String) inAppServer.readObject();
-                                        System.out.println("Listando banco de dados");
                                         outCliente.writeObject(resposta2);
                                         break;
                                     case "3":
-                                        outCliente.writeObject("Funcionalidade 3 selecionada");
+                                        outCliente.writeObject("Funcionalidade - Alterar OS...");
                                         int codigo = Integer.parseInt(partes[1]);
                                         String novonome = partes[2];
                                         String novadescricao = partes[3];
                                         OrdemServico osn = cache.buscar(codigo);
                                         if (osn == null) {
-                                            System.out.println("Ordem de serviço não encontrada");
-                                            outCliente.writeObject("Ordem de serviço não encontrada");
-                                            break;
+                                            System.out.println("Ordem de serviço não encontrada na cache");
+                                            outCliente.writeObject("Ordem de serviço não encontrada na cache");
+
+                                            // buscar na base de dados
+                                            outAppServer.writeObject("buscar;" + codigo);
+                                            outAppServer.flush();
+                                            osn = (OrdemServico) inAppServer.readObject();
+                                            if (osn == null) {
+                                                System.out.println("Ordem de serviço não encontrada na base de dados");
+                                                outCliente.writeObject(
+                                                        "Ordem de serviço não encontrada na base de dados");
+                                                break;
+                                            }
+
+                                            cache.adicionar(osn);
                                         }
                                         osn.setNome(novonome);
                                         osn.setDescricao(novadescricao);
+
+                                        // Enviar a OS atualizada ao servidor de aplicação
+                                        outAppServer.writeObject("atualizar;" + osn.getCodigo() + ";" + osn.getNome()
+                                                + ";" + osn.getDescricao());
+                                        outAppServer.flush();
+                                        outCliente.writeObject("Ordem de serviço atualizada com sucesso: " + osn);
                                         break;
                                     case "4":
-                                        outCliente.writeObject("Funcionalidade 4 selecionada");
+                                        outCliente.writeObject("Funcionalidade - Excluir OS...");
                                         int cod = Integer.parseInt(partes[1]);
                                         boolean res = cache.remover(cod);
                                         if (res) {
@@ -154,13 +174,27 @@ public class ProxyImpl {
                                         } else {
                                             System.out.println("Ordem de serviço não encontrada");
                                             outCliente.writeObject("Ordem de serviço não encontrada");
+                                            // buscar na base de dados
+                                            outAppServer.writeObject("remover;" + cod);
+                                            outAppServer.flush();
+                                            String resposta4 = (String) inAppServer.readObject();
+                                            outCliente.writeObject(resposta4);
                                         }
                                         break;
                                     case "5":
-                                        outCliente.writeObject("Funcionalidade 2 selecionada");
+                                        outCliente.writeObject("Funcionalidade - Exibir Cache");
                                         String listaCache = cache.listarCache();
                                         System.out.println("Listando cache: \n" + listaCache);
                                         outCliente.writeObject(listaCache);
+                                        break;
+                                    case "6":
+                                        outCliente.writeObject("Funcionalidade - Exibir Banco de Dados");
+                                        System.out.println(requisicao);
+                                        outAppServer.writeObject("listar");
+                                        outAppServer.flush();
+
+                                        String resposta6 = (String) inAppServer.readObject();
+                                        outCliente.writeObject(resposta6);
                                         break;
                                     case "0":
                                     case "sair":
