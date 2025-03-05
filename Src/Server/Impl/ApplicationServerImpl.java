@@ -11,22 +11,23 @@ public class ApplicationServerImpl {
     private int porta;
     private DatabaseOs database;
     private int nextId;
+    private String enderecoip;
 
-    public ApplicationServerImpl(int porta) {
+    public ApplicationServerImpl(int porta, String enderecoip) {
         this.porta = porta;
+        this.enderecoip = enderecoip;
         this.nextId = 1;
         this.database = new DatabaseOs();
         rodar();
     }
 
     public void rodar() {
-        try {
-            ServerSocket server = new ServerSocket(porta);
-            System.out.println("Servidor de Aplicação rodando " + InetAddress.getLocalHost().getHostAddress() + " : " + porta);
+        try (ServerSocket server = new ServerSocket(porta, 50, InetAddress.getByName(enderecoip))) {
+            System.out.println("Servidor de Aplicação rodando " + server.getInetAddress().getHostAddress() + " : " + server.getLocalPort());
 
             while (true) {
                 Socket cliente = server.accept();
-                System.out.println("Cliente conectado: " + cliente.getInetAddress().getHostAddress());
+                System.out.println("Cliente conectado: " + cliente.getInetAddress().getHostAddress() + ":" + cliente.getPort());
                 new Thread(new ClienteThread(cliente)).start();
             }
 
@@ -68,7 +69,7 @@ public class ApplicationServerImpl {
                             boolean removido = database.remover(idRemover);
                             out.writeObject(removido ? "Ordem de serviço removida com sucesso." : "Ordem de serviço não encontrada.");
                             break;
-                        case "editar":
+                        case "atualizar":
                             int idEditar = Integer.parseInt(partes[1]);
                             String novoNome = partes[2];
                             String novaDescricao = partes[3];
@@ -76,13 +77,18 @@ public class ApplicationServerImpl {
                             if (osEditar != null) {
                                 osEditar.setNome(novoNome);
                                 osEditar.setDescricao(novaDescricao);
-                                out.writeObject(osEditar);
+                                out.writeObject("Ordem de serviço atualizada.");
                             } else {
-                                out.writeObject("Ordem de serviço não encontrada.");
+                                out.writeObject("Ordem de Serviço não encontrada.");
                             }
                             break;
                         case "listar":
                             out.writeObject(database.gerarStringDatabase());
+                            break;
+                        case "buscar":
+                            int idBuscar = Integer.parseInt(partes[1]);
+                            OrdemServico osBuscar = database.buscar(idBuscar);
+                            out.writeObject(osBuscar != null ? osBuscar : "Ordem de serviço não encontrada.");
                             break;
                         default:
                             out.writeObject("Comando inválido.");
