@@ -19,8 +19,8 @@ public class DatabaseOs {
         return database.get(codigo);
     }
 
-    public void remover(int codigo) {
-        database.remove(codigo);
+    public boolean remover(int codigo) {
+        return database.remove(codigo) != null;
     }
 
     public void listarDatabase() {
@@ -35,6 +35,10 @@ public class DatabaseOs {
             sb.append(os.imprimir()).append(", ");
         }
         return sb.length() > 0 ? sb.substring(0, sb.length() - 2) : "Database vazia";
+    }
+
+    public boolean isEmpty() {
+        return database.isEmpty();
     }
 
     public boolean existe(int codigo) {
