@@ -3,14 +3,16 @@ package Src.Database;
 import Src.OrdemServico;
 
 public class DatabaseOs {
-    private TabelaHashEncadementoExterior database;
+    private final TabelaHashEncadementoExterior database;
 
     public DatabaseOs() {
         this.database = new TabelaHashEncadementoExterior(127);
     }
 
     public void adicionar(OrdemServico os) {
-        database.inserir(os);
+        synchronized (this) {
+            database.inserir(os);
+        }
     }
 
     public OrdemServico buscar(int codigo) {
@@ -18,11 +20,13 @@ public class DatabaseOs {
     }
 
     public boolean remover(int codigo) {
-        return database.remover(codigo) != null;
+        synchronized (this) {
+            return database.remover(codigo) != null;
+        }
     }
 
     public void listarDatabase() {
-       database.imprimirOSsEmOrdem();
+        database.imprimirOSsEmOrdem();
     }
 
     public String gerarStringDatabase() {
