@@ -1,26 +1,47 @@
 package Src.Server.Impl;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Scanner;
-
 import Src.OrdemServico;
 import Src.Database.CacheFIFO;
 
 public class ProxyImpl {
-    private int porta;
+    private int porta, portaAplicacao;
     private ServerSocket serverProxy;
     private CacheFIFO cache;
+    private String hostAplicacao;
 
-    public ProxyImpl(int porta) {
+    private Socket appServerSocket;
+    private ObjectOutputStream outAppServer;
+    private ObjectInputStream inAppServer;
+
+    public ProxyImpl(int porta, String hostAplicacao, int portaAplicacao) {
         this.porta = porta;
         this.cache = new CacheFIFO();
+        this.hostAplicacao = hostAplicacao;
+        this.portaAplicacao = portaAplicacao;
+        conectarAplicacao();
         rodar();
+    }
+
+    private void conectarAplicacao() {
+        while (appServerSocket == null) {
+            try {
+                appServerSocket = new Socket(hostAplicacao, portaAplicacao);
+                outAppServer = new ObjectOutputStream(appServerSocket.getOutputStream());
+                inAppServer = new ObjectInputStream(appServerSocket.getInputStream());
+                System.out.println("Conectado ao Servidor de Aplicação " + hostAplicacao + ":" + portaAplicacao);
+            } catch (IOException e) {
+                System.out.println("Servidor de Aplicação não disponível, tentando novamente...");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ie) {
+                    ie.printStackTrace();
+                }
+            }
+        }
     }
 
     public void rodar() {
@@ -32,7 +53,6 @@ public class ProxyImpl {
                 Socket cliente = serverProxy.accept();
                 System.out.println("Cliente conectado: " + cliente.getInetAddress().getHostAddress());
 
-                // Multiplos clientes
                 new Thread(new ClienteThread(cliente)).start();
             }
 
@@ -65,104 +85,100 @@ public class ProxyImpl {
 
         @Override
         public void run() {
-            try (Scanner inCliente = new Scanner(cliente.getInputStream());
-                    PrintWriter outCliente = new PrintWriter(cliente.getOutputStream(), true)) {
+            try (ObjectInputStream inCliente = new ObjectInputStream(cliente.getInputStream());
+                 ObjectOutputStream outCliente = new ObjectOutputStream(cliente.getOutputStream())) {
+                
+                outCliente.writeObject("Conexão estabelecida com o Proxy");
 
-                outCliente.println("Conexão estabelecida com o Proxy");
-
-                while (inCliente.hasNextLine()) {
-                    String mensagem = inCliente.nextLine();
+                while (true) {
+                    String mensagem = (String) inCliente.readObject();
                     System.out.println("Mensagem recebida do cliente: " + mensagem);
 
                     if (mensagem.equals("Novo cliente querendo conexão, envie localização")) {
-                        // Se for mensagem do servidor de localização
                         String host = InetAddress.getLocalHost().getHostAddress();
-                        outCliente.println(host + ":" + porta);
-                    } else { // Cliente normal
-
+                        outCliente.writeObject(host + ":" + porta);
+                    } else {
                         if (autenticarCliente(mensagem)) {
-                            outCliente.println("Cliente autenticado");
+                            outCliente.writeObject("Cliente autenticado");
                             while (true) {
-                                outCliente.println("Qual funcionalidade deseja acessar no sistema?");
-                                String requisição = inCliente.nextLine();
-                                System.out.println("Requisição do cliente: " + requisição);
-                                String[] partes = requisição.split(";");
-                                for (String parte : partes) {
-                                    System.out.println(parte + " ");
-                                }
-                               
-                                String funcionalidade = requisição.split(";")[0];
+                                outCliente.writeObject("Qual funcionalidade deseja acessar no sistema?");
+                                String requisicao = (String) inCliente.readObject();
+                                System.out.println("Requisição do cliente: " + requisicao);
+                                String[] partes = requisicao.split(";");
+
+                                String funcionalidade = partes[0];
                                 System.out.println("Cliente selecionou a funcionalidade: " + funcionalidade);
+                                
                                 switch (funcionalidade) {
                                     case "1":
-                                    outCliente.println("Funcionalidade 1 selecionada");
-                                        String nome = requisição.split(";")[1];
-                                        String descricao = requisição.split(";")[2];
-                                        System.out.println("Nome: " + nome + " Descrição: " + descricao);
+                                        outCliente.writeObject("Funcionalidade 1 selecionada");
+                                        System.out.println(requisicao);
+                                        outAppServer.writeObject(requisicao);
+                                        outAppServer.flush();
 
-                                        OrdemServico os = new OrdemServico(nome, descricao);
-                                        cache.adicionar(os);
+                                        OrdemServico resposta = (OrdemServico) inAppServer.readObject();
+                                        cache.adicionar(resposta);
+                                        System.out.println("Ordem de Serviço adicionada ao cache: " + resposta);
                                         break;
                                     case "2":
-                                        outCliente.println("Funcionalidade 2 selecionada");
-                                        String listaCache = cache.listarCache();
-                                        System.out.println("Listando cache: \n" + listaCache);
-                                        outCliente.println(listaCache);
-                                        outCliente.println("FIM");
-                                        outCliente.flush();
+                                        outCliente.writeObject("Funcionalidade 2 selecionada");
+                                        System.out.println(requisicao);
+                                        outAppServer.writeObject(requisicao);
+                                        outAppServer.flush();
+
+                                        String resposta2 = (String) inAppServer.readObject();
+                                        System.out.println("Listando banco de dados");
+                                        outCliente.writeObject(resposta2);
                                         break;
                                     case "3":
-                                        outCliente.println("Funcionalidade 3 selecionada");
-                                        int codigo = Integer.parseInt(requisição.split(";")[1]);
-                                        String novonome = requisição.split(";")[2];
-                                        String novadescricao = requisição.split(";")[3];
-                                        OrdemServico osn =cache.buscar(codigo);
-                                        if(osn==null){
+                                        outCliente.writeObject("Funcionalidade 3 selecionada");
+                                        int codigo = Integer.parseInt(partes[1]);
+                                        String novonome = partes[2];
+                                        String novadescricao = partes[3];
+                                        OrdemServico osn = cache.buscar(codigo);
+                                        if (osn == null) {
                                             System.out.println("Ordem de serviço não encontrada");
-                                            outCliente.println("Ordem de serviço não encontrada");
+                                            outCliente.writeObject("Ordem de serviço não encontrada");
                                             break;
                                         }
                                         osn.setNome(novonome);
                                         osn.setDescricao(novadescricao);
-
                                         break;
                                     case "4":
-                                        outCliente.println("Funcionalidade 4 selecionada");
-                                        int cod = Integer.parseInt(requisição.split(";")[1]);
+                                        outCliente.writeObject("Funcionalidade 4 selecionada");
+                                        int cod = Integer.parseInt(partes[1]);
                                         boolean res = cache.remover(cod);
-                                        System.out.println(res);
-                                        if(res){
+                                        if (res) {
                                             System.out.println("Ordem de serviço removida com sucesso");
-                                            outCliente.println("Ordem de serviço removida com sucesso");
-                                        }else{
+                                            outCliente.writeObject("Ordem de serviço removida com sucesso");
+                                        } else {
                                             System.out.println("Ordem de serviço não encontrada");
-                                            outCliente.println("Ordem de serviço não encontrada");
+                                            outCliente.writeObject("Ordem de serviço não encontrada");
                                         }
                                         break;
                                     case "5":
-                                        outCliente.println("Funcionalidade 5 selecionada");
-                                        break;
-                                    case "6":
-                                        outCliente.println("Funcionalidade 6 selecionada");
+                                        outCliente.writeObject("Funcionalidade 2 selecionada");
+                                        String listaCache = cache.listarCache();
+                                        System.out.println("Listando cache: \n" + listaCache);
+                                        outCliente.writeObject(listaCache);
                                         break;
                                     case "0":
                                     case "sair":
-                                        outCliente.println("Desconectando...");
+                                        outCliente.writeObject("Desconectando...");
                                         cliente.close();
                                         return;
                                     default:
-                                        outCliente.println("Opção inválida, tente novamente.");
+                                        outCliente.writeObject("Opção inválida, tente novamente.");
                                         break;
                                 }
                             }
                         } else {
-                            outCliente.println("Credenciais inválidas");
+                            outCliente.writeObject("Credenciais inválidas");
                             break;
                         }
                     }
                 }
-
-            } catch (IOException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             } finally {
                 try {
