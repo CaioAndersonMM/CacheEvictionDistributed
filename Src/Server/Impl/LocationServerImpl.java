@@ -1,18 +1,19 @@
 package Src.Server.Impl;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Scanner;
 
 public class LocationServerImpl {
     private String proxyHost;
     private int porta, proxyPort;
     private Socket socketProxy;
     private ServerSocket serverLocation;
-    private PrintWriter out;
-    private Scanner in;
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
     private boolean proxyAtivo;
 
     public LocationServerImpl(int porta, String proxyHost, int proxyPort) {
@@ -23,22 +24,24 @@ public class LocationServerImpl {
     }
 
     public void rodar() {
-        
         try {
-            serverLocation = new ServerSocket(porta);
+            String localHostAddress = InetAddress.getLocalHost().getHostAddress();
+            serverLocation = new ServerSocket(porta, 50, InetAddress.getByName(localHostAddress));
             System.out.println("Servidor de localização rodando " + serverLocation.getInetAddress().getHostAddress() + ":" + porta);
 
             while (socketProxy == null) {
                 try {
+                    System.out.println("Tentando conectar ao Proxy " + proxyHost + ":" + proxyPort);
                     socketProxy = new Socket(proxyHost, proxyPort);
-                    out = new PrintWriter(socketProxy.getOutputStream(), true);
-                    in = new Scanner(socketProxy.getInputStream());
-    
-                    if (in.nextLine().equals("Conexão estabelecida com o Proxy")) {
+                    out = new ObjectOutputStream(socketProxy.getOutputStream());
+                    in = new ObjectInputStream(socketProxy.getInputStream());
+
+                    Object resposta = in.readObject();
+                    if (resposta instanceof String && resposta.equals("Conexão estabelecida com o Proxy")) {
                         System.out.println("Servidor de Localização conectado ao Proxy - esperando clientes");
                         proxyAtivo = true;
                     }
-                } catch (IOException e) {
+                } catch (IOException | ClassNotFoundException e) {
                     System.out.println("Proxy não disponível, tentando novamente...");
                     try {
                         Thread.sleep(1000);
@@ -65,12 +68,22 @@ public class LocationServerImpl {
         System.out.println("Servidor de localização conectado ao Proxy " + proxyHost + ":" + proxyPort);
     }
 
-    public void enviarMensagemAoProxy(String message) {
-        out.println(message);
+    public void enviarMensagemAoProxy(Object message) {
+        try {
+            out.writeObject(message);
+            out.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public String receberMensagemDoProxy() {
-        return in.nextLine();
+    public Object receberMensagemDoProxy() {
+        try {
+            return in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public void fecharConexaoProxy() throws IOException {
@@ -89,20 +102,22 @@ public class LocationServerImpl {
 
         @Override
         public void run() {
-            try (Scanner inCliente = new Scanner(cliente.getInputStream());
-                 PrintWriter outCliente = new PrintWriter(cliente.getOutputStream(), true)) {
+            try (ObjectOutputStream outCliente = new ObjectOutputStream(cliente.getOutputStream());
+                 ObjectInputStream inCliente = new ObjectInputStream(cliente.getInputStream())) {
 
                 // Envia mensagem do cliente para o Proxy
                 enviarMensagemAoProxy("Novo cliente querendo conexão, envie localização");
-                String resposta = receberMensagemDoProxy();
+                Object resposta = receberMensagemDoProxy();
                 System.out.println("Localização recebida do Proxy: " + resposta);
 
-                String[] localizacao = resposta.split(":");
-                String host = localizacao[0];
-                int porta = Integer.parseInt(localizacao[1]);
+                if (resposta instanceof String) {
+                    String[] localizacao = ((String) resposta).split(":");
+                    String host = localizacao[0];
+                    int porta = Integer.parseInt(localizacao[1]);
 
-                // Envia localização do Proxy para o cliente
-                outCliente.println(host + ":" + porta);
+                    // Envia localização do Proxy para o cliente
+                    outCliente.writeObject(host + ":" + porta);
+                }
 
             } catch (IOException e) {
                 e.printStackTrace();
