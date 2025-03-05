@@ -2,7 +2,6 @@ package Src;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Random;
 
 public class OrdemServico {
     private int codigo;
@@ -10,12 +9,11 @@ public class OrdemServico {
     private String descricao;
     private String horaSolicitacao;
 
-    public OrdemServico(String nome, String descricao) {
-        Random random = new Random();
-        this.codigo = random.nextInt(1000);
+    public OrdemServico(int codigo, String nome, String descricao) {
+        this.codigo = codigo;
         this.nome = nome;
         this.descricao = descricao;
-         this.horaSolicitacao = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        this.horaSolicitacao = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
 
     public int getCodigo() {
