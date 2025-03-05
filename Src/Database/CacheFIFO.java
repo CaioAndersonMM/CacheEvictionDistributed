@@ -42,9 +42,9 @@ public class CacheFIFO {
     }
     
 
-    public void remover(int codigo) {
+    public boolean remover(int codigo) {
         synchronized(this){
-        cache.removeIf(os -> os.getCodigo() == codigo);
+       return  cache.removeIf(os -> os.getCodigo() == codigo);
     }
     }
 

@@ -108,6 +108,8 @@ public class ProxyImpl {
                                         String listaCache = cache.listarCache();
                                         System.out.println("Listando cache: \n" + listaCache);
                                         outCliente.println(listaCache);
+                                        outCliente.println("FIM");
+                                        outCliente.flush();
                                         break;
                                     case "3":
                                         outCliente.println("Funcionalidade 3 selecionada");
@@ -116,6 +118,7 @@ public class ProxyImpl {
                                         String novadescricao = requisição.split(";")[3];
                                         OrdemServico osn =cache.buscar(codigo);
                                         if(osn==null){
+                                            System.out.println("Ordem de serviço não encontrada");
                                             outCliente.println("Ordem de serviço não encontrada");
                                             break;
                                         }
@@ -126,7 +129,15 @@ public class ProxyImpl {
                                     case "4":
                                         outCliente.println("Funcionalidade 4 selecionada");
                                         int cod = Integer.parseInt(requisição.split(";")[1]);
-                                        cache.remover(cod);
+                                        boolean res = cache.remover(cod);
+                                        System.out.println(res);
+                                        if(res){
+                                            System.out.println("Ordem de serviço removida com sucesso");
+                                            outCliente.println("Ordem de serviço removida com sucesso");
+                                        }else{
+                                            System.out.println("Ordem de serviço não encontrada");
+                                            outCliente.println("Ordem de serviço não encontrada");
+                                        }
                                         break;
                                     case "5":
                                         outCliente.println("Funcionalidade 5 selecionada");

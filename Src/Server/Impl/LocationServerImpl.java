@@ -41,7 +41,7 @@ public class LocationServerImpl {
                 } catch (IOException e) {
                     System.out.println("Proxy não disponível, tentando novamente...");
                     try {
-                        Thread.sleep(10000);
+                        Thread.sleep(1000);
                     } catch (InterruptedException ie) {
                         ie.printStackTrace();
                     }

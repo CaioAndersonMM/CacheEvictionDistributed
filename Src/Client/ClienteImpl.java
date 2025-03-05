@@ -72,7 +72,6 @@ public class ClienteImpl {
 
                 if (resposta.equals("Cliente autenticado")) {
                     while (true) {
-                        System.out.println("Proxy: " + resposta);
                         System.out.println(Menu.exibirMenu());
                         resposta = inProxy.nextLine();
 
@@ -105,6 +104,10 @@ public class ClienteImpl {
                                 System.out.println("digite o código da ordem de serviço que deseja excluir: ");
                                 codigo = Integer.parseInt(sc.nextLine().trim());
                                 outProxy.println(opcao+";"+codigo);
+                                String rp;
+                                while (!(rp = inProxy.nextLine()).isEmpty()) {
+                                    System.out.println(rp);
+                                }
                                 break;
                             case "5":
                                 //ignorar por enquanto
