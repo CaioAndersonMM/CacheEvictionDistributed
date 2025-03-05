@@ -1,10 +1,17 @@
 package Src.Server;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import Src.Server.Impl.ProxyImpl;
 
 public class ProxyServer {
     public static void main(String[] args) {
 
-        new ProxyImpl(5005, "192.168.0.100", 5055);
+        try {
+            new ProxyImpl(5005, InetAddress.getLocalHost().getHostAddress(), 5055);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
     }
 }
