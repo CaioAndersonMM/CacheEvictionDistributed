@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Scanner;
 import Src.Menu;
+import Src.Comando;
 
 public class ClienteImpl {
     private int port;
@@ -86,19 +87,20 @@ public class ClienteImpl {
                                     System.out.println(Menu.exibirMenu());
 
                                     String opcao = sc.nextLine();
-                                    outProxy.writeObject(opcao);
-                                    outProxy.flush();
-
                                     switch (opcao) {
                                         case "1":
                                             System.out.println("Digite o nome da ordem de serviço: ");
                                             String nome = sc.nextLine();
                                             System.out.println("Digite a descrição da ordem de serviço: ");
                                             String descricao = sc.nextLine();
-                                            outProxy.writeObject(opcao + ";" + nome + ";" + descricao);
+                                            Comando comandoAdicionar = new Comando("adicionar", nome, descricao);
+                                            outProxy.writeObject(comandoAdicionar);
                                             outProxy.flush();
                                             break;
                                         case "2":
+                                            Comando comandoListar = new Comando("listar");
+                                            outProxy.writeObject(comandoListar);
+                                            outProxy.flush();
                                             String respostaCache;
                                             while (inProxy.readObject() instanceof String && !(respostaCache = (String) inProxy.readObject()).isEmpty()) {
                                                 System.out.println(respostaCache);
@@ -111,13 +113,15 @@ public class ClienteImpl {
                                             nome = sc.nextLine();
                                             System.out.println("Digite a nova descrição da ordem de serviço: ");
                                             descricao = sc.nextLine();
-                                            outProxy.writeObject(opcao + ";" + codigo + ";" + nome + ";" + descricao);
+                                            Comando comandoAlterar = new Comando("atualizar", String.valueOf(codigo), nome, descricao);
+                                            outProxy.writeObject(comandoAlterar);
                                             outProxy.flush();
                                             break;
                                         case "4":
                                             System.out.println("Digite o código da ordem de serviço que deseja excluir: ");
                                             codigo = Integer.parseInt(sc.nextLine().trim());
-                                            outProxy.writeObject(opcao + ";" + codigo);
+                                            Comando comandoExcluir = new Comando("remover", String.valueOf(codigo));
+                                            outProxy.writeObject(comandoExcluir);
                                             outProxy.flush();
                                             String rp;
                                             while (inProxy.readObject() instanceof String && !(rp = (String) inProxy.readObject()).isEmpty()) {
@@ -126,16 +130,19 @@ public class ClienteImpl {
                                             break;
                                         case "5":
                                             // Ignorar por enquanto
-                                            outProxy.writeObject("5");
+                                            Comando comando5 = new Comando("5");
+                                            outProxy.writeObject(comando5);
                                             outProxy.flush();
                                             break;
                                         case "6":
                                             // Ignorar por enquanto
-                                            outProxy.writeObject("6");
+                                            Comando comando6 = new Comando("6");
+                                            outProxy.writeObject(comando6);
                                             outProxy.flush();
                                             break;
                                         case "0":
-                                            outProxy.writeObject("0");
+                                            Comando comandoSair = new Comando("0");
+                                            outProxy.writeObject(comandoSair);
                                             outProxy.flush();
                                             return;
                                         default:
