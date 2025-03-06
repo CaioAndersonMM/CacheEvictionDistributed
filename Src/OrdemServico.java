@@ -1,9 +1,10 @@
 package Src;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class OrdemServico {
+public class OrdemServico implements Serializable{
     private int codigo;
     private String nome;
     private String descricao;
