@@ -6,6 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import Src.OrdemServico;
 import Src.Database.DatabaseOs;
+import Src.Comando;
 
 public class ApplicationServerImpl {
     private int porta;
@@ -52,27 +53,27 @@ public class ApplicationServerImpl {
                 in = new ObjectInputStream(cliente.getInputStream());
 
                 while (true) {
-                    String mensagem = (String) in.readObject();
-                    String[] partes = mensagem.split(";");
-                    String comando = partes[0];
+                    Comando comando = (Comando) in.readObject();
+                    String tipo = comando.getTipo();
+                    String[] parametros = comando.getParametros();
 
-                    switch (comando) {
+                    switch (tipo) {
                         case "adicionar":
-                            String nome = partes[1];
-                            String descricao = partes[2];
+                            String nome = parametros[0];
+                            String descricao = parametros[1];
                             OrdemServico os = new OrdemServico(nextId++, nome, descricao);
                             database.adicionar(os);
                             out.writeObject(os);
                             break;
                         case "remover":
-                            int idRemover = Integer.parseInt(partes[1]);
+                            int idRemover = Integer.parseInt(parametros[0]);
                             boolean removido = database.remover(idRemover);
                             out.writeObject(removido ? "Ordem de serviço removida com sucesso." : "Ordem de serviço não encontrada.");
                             break;
                         case "atualizar":
-                            int idEditar = Integer.parseInt(partes[1]);
-                            String novoNome = partes[2];
-                            String novaDescricao = partes[3];
+                            int idEditar = Integer.parseInt(parametros[0]);
+                            String novoNome = parametros[1];
+                            String novaDescricao = parametros[2];
                             OrdemServico osEditar = database.buscar(idEditar);
                             if (osEditar != null) {
                                 osEditar.setNome(novoNome);
@@ -86,7 +87,7 @@ public class ApplicationServerImpl {
                             out.writeObject(database.gerarStringDatabase());
                             break;
                         case "buscar":
-                            int idBuscar = Integer.parseInt(partes[1]);
+                            int idBuscar = Integer.parseInt(parametros[0]);
                             OrdemServico osBuscar = database.buscar(idBuscar);
                             out.writeObject(osBuscar != null ? osBuscar : "Ordem de serviço não encontrada.");
                             break;
