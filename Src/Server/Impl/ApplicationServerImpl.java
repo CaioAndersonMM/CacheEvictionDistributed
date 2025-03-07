@@ -7,6 +7,7 @@ import java.net.Socket;
 import Src.OrdemServico;
 import Src.Database.DatabaseOs;
 import Src.Comando;
+import Src.MenuLogger;
 
 public class ApplicationServerImpl {
     private int porta;
@@ -25,10 +26,12 @@ public class ApplicationServerImpl {
     public void rodar() {
         try (ServerSocket server = new ServerSocket(porta, 50, InetAddress.getByName(enderecoip))) {
             System.out.println("Servidor de Aplicação rodando " + server.getInetAddress().getHostAddress() + " : " + server.getLocalPort());
+            MenuLogger.escreverLog("Servidor de Aplicação rodando " + server.getInetAddress().getHostAddress() + " : " + server.getLocalPort());
 
             while (true) {
                 Socket cliente = server.accept();
                 System.out.println("Cliente conectado: " + cliente.getInetAddress().getHostAddress() + ":" + cliente.getPort());
+                MenuLogger.escreverLog("Novo cliente conectado ao Servidor de Aplicação: " + cliente.getInetAddress().getHostAddress() + ":" + cliente.getPort());
                 new Thread(new ClienteThread(cliente)).start();
             }
 
@@ -64,11 +67,13 @@ public class ApplicationServerImpl {
                             OrdemServico os = new OrdemServico(nextId++, nome, descricao);
                             database.adicionar(os);
                             out.writeObject(os);
+                            MenuLogger.escreverLog("ServerApp: Ordem de Serviço adicionada: " + nome);
                             break;
                         case "remover":
                             int idRemover = Integer.parseInt(parametros[0]);
                             boolean removido = database.remover(idRemover);
                             out.writeObject(removido ? "Ordem de serviço removida com sucesso." : "Ordem de serviço não encontrada.");
+                            MenuLogger.escreverLog("ServerApp: Ordem de Serviço removida: " + idRemover);
                             break;
                         case "atualizar":
                             int idEditar = Integer.parseInt(parametros[0]);
@@ -79,12 +84,15 @@ public class ApplicationServerImpl {
                                 osEditar.setNome(novoNome);
                                 osEditar.setDescricao(novaDescricao);
                                 out.writeObject("Ordem de serviço atualizada.");
+                                MenuLogger.escreverLog("ServerApp: Ordem de Serviço atualizada: " + idEditar);
                             } else {
                                 out.writeObject("Ordem de Serviço não encontrada.");
                             }
                             break;
                         case "listar":
                             out.writeObject(database.gerarStringDatabase());
+                            System.out.println("Listando Ordens de Serviço");
+                            MenuLogger.escreverLog("ServerApp: Listando Ordens de Serviço");
                             break;
                         case "buscar":
                             int idBuscar = Integer.parseInt(parametros[0]);
