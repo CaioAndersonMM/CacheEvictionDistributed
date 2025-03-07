@@ -7,6 +7,7 @@ import java.net.Socket;
 import Src.OrdemServico;
 import Src.Database.CacheFIFO;
 import Src.Comando;
+import Src.MenuLogger;
 
 public class ProxyImpl {
     private int porta, portaAplicacao;
@@ -34,6 +35,8 @@ public class ProxyImpl {
                 outAppServer = new ObjectOutputStream(appServerSocket.getOutputStream());
                 inAppServer = new ObjectInputStream(appServerSocket.getInputStream());
                 System.out.println("Conectado ao Servidor de Aplicação " + hostAplicacao + ":" + portaAplicacao);
+                MenuLogger.escreverLog(
+                        "Proxy foi conectado ao Servidor de Aplicação " + hostAplicacao + ":" + portaAplicacao);
             } catch (IOException e) {
                 System.out.println("Servidor de Aplicação não disponível, tentando novamente...");
                 try {
@@ -53,6 +56,9 @@ public class ProxyImpl {
 
             while (true) {
                 Socket cliente = serverProxy.accept();
+
+                MenuLogger.escreverLog("Novo cliente conectado ao Proxy " + cliente.getInetAddress().getHostAddress()
+                        + " : " + cliente.getPort());
 
                 System.out.println(
                         "Cliente conectado: " + cliente.getInetAddress().getHostAddress() + " : " + cliente.getPort());
@@ -105,13 +111,14 @@ public class ProxyImpl {
                         String host = InetAddress.getLocalHost().getHostAddress();
                         outCliente.writeObject(host + ":" + porta);
                         outCliente.flush();
+                        MenuLogger.escreverLog("Proxy: Localização do Proxy enviada ao cliente " + host + ":" + porta);
                     } else {
                         if (autenticarCliente(mensagem)) {
                             outCliente.writeObject("Cliente autenticado");
                             outCliente.flush();
+                            MenuLogger.escreverLog("Proxy: Cliente " + cliente.getInetAddress().getHostAddress()
+                                    + " autenticado com sucesso");
                             while (true) {
-                                outCliente.writeObject("Qual funcionalidade deseja acessar no sistema?");
-                                outCliente.flush();
                                 Comando comando = (Comando) inCliente.readObject();
                                 System.out.println("Requisição do cliente: " + comando.getTipo());
                                 String[] partes = comando.getParametros();
@@ -121,8 +128,6 @@ public class ProxyImpl {
 
                                 switch (funcionalidade) {
                                     case "adicionar":
-                                        outCliente.writeObject("Funcionalidade - Cadastrar....");
-                                        outCliente.flush();
                                         System.out.println(comando);
                                         outAppServer.writeObject(comando);
                                         outAppServer.flush();
@@ -134,14 +139,14 @@ public class ProxyImpl {
                                             outCliente.writeObject(resposta);
                                             outCliente.flush();
                                         } else {
-                                            System.out.println("Resposta inesperada do servidor de aplicação: " + resposta);
+                                            System.out.println(
+                                                    "Resposta inesperada do servidor de aplicação: " + resposta);
                                             outCliente.writeObject("Erro ao adicionar ordem de serviço.");
                                             outCliente.flush();
                                         }
+                                        MenuLogger.escreverLog("Proxy: Ordem de Serviço adicionada ");
                                         break;
                                     case "listar":
-                                        outCliente.writeObject("Funcionalidade - Listar OS...");
-                                        outCliente.flush();
                                         System.out.println(comando);
                                         outAppServer.writeObject(comando);
                                         outAppServer.flush();
@@ -150,16 +155,16 @@ public class ProxyImpl {
                                         if (resposta2 instanceof String) {
                                             outCliente.writeObject((String) resposta2);
                                             outCliente.flush();
+                                            System.out.println("Resposta enviada ao cliente: " + resposta2);
                                         } else {
                                             System.out.println(
                                                     "Resposta inesperada do servidor de aplicação: " + resposta2);
                                             outCliente.writeObject("Erro ao listar ordens de serviço.");
                                             outCliente.flush();
                                         }
+                                        MenuLogger.escreverLog("Proxy: Ordens de serviço listadas");
                                         break;
                                     case "atualizar":
-                                        outCliente.writeObject("Funcionalidade - Alterar OS...");
-                                        outCliente.flush();
                                         int codigo = Integer.parseInt(partes[0]);
                                         String novonome = partes[1];
                                         String novadescricao = partes[2];
@@ -183,6 +188,7 @@ public class ProxyImpl {
                                                 outCliente.flush();
                                                 break;
                                             }
+                                            MenuLogger.escreverLog("Proxy: Ordem de serviço buscada no banco de dados");
                                         }
                                         osn.setNome(novonome);
                                         osn.setDescricao(novadescricao);
@@ -193,46 +199,47 @@ public class ProxyImpl {
                                         outAppServer.flush();
                                         outCliente.writeObject("Ordem de serviço atualizada com sucesso: " + osn);
                                         outCliente.flush();
+                                        MenuLogger.escreverLog("Proxy: Ordem de serviço atualizada " + osn);
                                         break;
                                     case "remover":
-                                        outCliente.writeObject("Funcionalidade - Excluir OS...");
-                                        outCliente.flush();
                                         int cod = Integer.parseInt(partes[0]);
                                         boolean res = cache.remover(cod);
                                         if (res) {
-                                            System.out.println("Ordem de serviço removida com sucesso");
-                                            outCliente.writeObject("Ordem de serviço removida com sucesso");
-                                            outCliente.flush();
+                                            System.out.println("Ordem de serviço removida com sucesso da cache");
+                                            MenuLogger.escreverLog("Proxy: Ordem de serviço removida da cache: " + cod);
                                         } else {
-                                            System.out.println("Ordem de serviço não encontrada");
-                                            outCliente.writeObject("Ordem de serviço não encontrada");
+                                            System.out.println("Ordem de serviço não encontrada na cache");
+                                        }
+                                        // Remover do banco de dados
+                                        outAppServer.writeObject(new Comando("remover", String.valueOf(cod)));
+                                        outAppServer.flush();
+                                        Object resposta4 = inAppServer.readObject();
+                                        if (resposta4 instanceof String) {
+                                            outCliente.writeObject((String) resposta4);
                                             outCliente.flush();
-                                            // buscar na base de dados
-                                            outAppServer.writeObject(new Comando("remover", String.valueOf(cod)));
-                                            outAppServer.flush();
-                                            Object resposta4 = inAppServer.readObject();
-                                            if (resposta4 instanceof String) {
-                                                outCliente.writeObject((String) resposta4);
-                                                outCliente.flush();
+                                            if (((String) resposta4).contains("sucesso")) {
+                                                MenuLogger.escreverLog(
+                                                        "Proxy: Ordem de serviço removida do banco de dados: " + cod);
                                             } else {
-                                                System.out.println(
-                                                        "Resposta inesperada do servidor de aplicação: " + resposta4);
-                                                outCliente.writeObject("Erro ao remover ordem de serviço.");
-                                                outCliente.flush();
+                                                MenuLogger.escreverLog(
+                                                        "Proxy: Ordem de Serviço não foi encontrada na Base de Dados para remoção"
+                                                                + cod);
                                             }
+                                        } else {
+                                            System.out.println(
+                                                    "Resposta inesperada do servidor de aplicação: " + resposta4);
+                                            outCliente.writeObject("Erro ao remover ordem de serviço.");
+                                            outCliente.flush();
                                         }
                                         break;
                                     case "5":
-                                        outCliente.writeObject("Funcionalidade - Exibir Cache");
-                                        outCliente.flush();
                                         String listaCache = cache.listarCache();
                                         System.out.println("Listando cache: \n" + listaCache);
                                         outCliente.writeObject(listaCache);
                                         outCliente.flush();
+                                        MenuLogger.escreverLog("Proxy: Cache exibido");
                                         break;
                                     case "6":
-                                        outCliente.writeObject("Funcionalidade - Exibir Banco de Dados");
-                                        outCliente.flush();
                                         System.out.println(comando);
                                         outAppServer.writeObject(new Comando("listar"));
                                         outAppServer.flush();
@@ -247,12 +254,15 @@ public class ProxyImpl {
                                             outCliente.writeObject("Erro ao exibir banco de dados.");
                                             outCliente.flush();
                                         }
+                                        MenuLogger.escreverLog("Proxy: Banco de dados exibido");
                                         break;
                                     case "0":
                                     case "sair":
                                         outCliente.writeObject("Desconectando...");
                                         outCliente.flush();
                                         cliente.close();
+                                        MenuLogger.escreverLog("Cliente desconectado do Proxy: "
+                                                + cliente.getInetAddress().getHostAddress());
                                         return;
                                     default:
                                         outCliente.writeObject("Opção inválida, tente novamente.");
