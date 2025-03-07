@@ -46,6 +46,7 @@ public class ClienteImpl {
 
             outLocation.writeObject("Novo cliente querendo conexão, envie localização");
             outLocation.flush();
+            outLocation.reset();    
             System.out.println("Pedido de localização enviado");
             MenuLogger.escreverLog("Cliente: Pedido de localização enviado ao Servidor de Localização");
 
@@ -81,7 +82,7 @@ public class ClienteImpl {
         Socket proxySocket = null;
         try {
             proxySocket = new Socket();
-            proxySocket.connect(new InetSocketAddress(proxyHost, proxyPort), 5000); // Timeout de 5 segundos
+            proxySocket.connect(new InetSocketAddress(proxyHost, proxyPort), 10000);
             System.out.println("Conectado ao Proxy " + proxyHost + ":" + proxyPort);
             MenuLogger.escreverLog("Cliente [" + port + "]: Conectado ao Proxy " + proxyHost + ":" + proxyPort);
 
@@ -89,13 +90,11 @@ public class ClienteImpl {
                  ObjectInputStream inProxy = new ObjectInputStream(proxySocket.getInputStream());
                  Scanner sc = new Scanner(System.in)) {
 
-                // Receber resposta inicial do proxy
                 Object respostaObj = receberResposta(inProxy);
                 if (respostaObj instanceof String) {
                     String resposta = (String) respostaObj;
                     System.out.println("Resposta do Proxy: " + resposta);
 
-                    // Autenticar usuário
                     if (autenticarUsuario(outProxy, inProxy, sc)) {
                         gerenciarMenu(outProxy, inProxy, sc);
                     }
@@ -159,6 +158,8 @@ public class ClienteImpl {
                 case EXCLUIR:
                     excluirOrdemServico(out, in, sc);
                     break;
+                    case EXIBIRCACHE:
+                    exibirCache(out, in);
                 case SAIR:
                     enviarComando(out, new Comando("sair"));
                     MenuLogger.escreverLog("Cliente [" + port + "]: Desconectado do Proxy");
@@ -180,6 +181,16 @@ public class ClienteImpl {
         Object respostaAdicionar = receberResposta(in);
         if (respostaAdicionar instanceof OrdemServico) {
             System.out.println("Ordem de Serviço adicionada: " + respostaAdicionar);
+        }
+    }
+
+    private void exibirCache(ObjectOutputStream out, ObjectInputStream in) throws IOException, ClassNotFoundException {
+        Comando comandoListarCache = new Comando("listarCache");
+        enviarComando(out, comandoListarCache);
+
+        Object respostaListarCache = receberResposta(in);
+        if (respostaListarCache instanceof String) {
+            System.out.println((String) respostaListarCache);
         }
     }
 
@@ -245,6 +256,7 @@ public class ClienteImpl {
         LISTAR("2"),
         ALTERAR("3"),
         EXCLUIR("4"),
+        EXIBIRCACHE("5"),
         SAIR("0");
 
         private final String valor;

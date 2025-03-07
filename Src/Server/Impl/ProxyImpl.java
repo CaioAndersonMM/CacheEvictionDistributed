@@ -26,6 +26,7 @@ public class ProxyImpl {
         this.portaAplicacao = portaAplicacao;
         conectarAplicacao();
         rodar();
+       
     }
 
     private void conectarAplicacao() {
@@ -95,8 +96,10 @@ public class ProxyImpl {
 
         @Override
         public void run() {
-            try (ObjectInputStream inCliente = new ObjectInputStream(cliente.getInputStream());
-                    ObjectOutputStream outCliente = new ObjectOutputStream(cliente.getOutputStream())) {
+            try 
+            ( ObjectOutputStream outCliente = new ObjectOutputStream(cliente.getOutputStream());
+                ObjectInputStream inCliente = new ObjectInputStream(cliente.getInputStream());
+                   ) {
 
                 System.out.println(
                         "Enviando mensagem de conexão ao cliente: " + cliente.getInetAddress().getHostAddress());
@@ -232,7 +235,7 @@ public class ProxyImpl {
                                             outCliente.flush();
                                         }
                                         break;
-                                    case "5":
+                                    case "listarCache":
                                         String listaCache = cache.listarCache();
                                         System.out.println("Listando cache: \n" + listaCache);
                                         outCliente.writeObject(listaCache);
