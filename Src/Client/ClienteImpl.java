@@ -5,7 +5,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Scanner;
-import Src.Menu;
+import Src.MenuLogger;
+import Src.OrdemServico;
 import Src.Comando;
 
 public class ClienteImpl {
@@ -22,13 +23,13 @@ public class ClienteImpl {
 
     public void rodar() {
         System.out.println("Cliente rodando na porta " + port);
-
         Socket locationSocket = null;
 
         while (locationSocket == null) {
             try {
                 locationSocket = new Socket(locationHost, locationPort);
                 System.out.println("Conectado ao servidor de localização " + locationHost + ":" + locationPort);
+                MenuLogger.escreverLog("Cliente: Conectado ao Servidor de Localização " + locationHost + ":" + locationPort);
             } catch (IOException e) {
                 System.out.println("Servidor de localização não disponível, tentando novamente...");
                 try {
@@ -45,11 +46,13 @@ public class ClienteImpl {
             outLocation.writeObject("Novo cliente querendo conexão, envie localização");
             outLocation.flush();
             System.out.println("Pedido de localização enviado");
+            MenuLogger.escreverLog("Cliente: Pedido de localização enviado ao Servidor de Localização");
 
             Object proxyLocationObj = inLocation.readObject();
             if (proxyLocationObj instanceof String) {
                 String proxyLocation = (String) proxyLocationObj;
                 System.out.println("Localização do Proxy recebida: " + proxyLocation);
+                MenuLogger.escreverLog("Cliente: Localização do Proxy recebida: " + proxyLocation);
 
                 // O proxy vai responder host:porta
                 String[] proxyInfo = proxyLocation.split(":");
@@ -62,6 +65,7 @@ public class ClienteImpl {
                      Scanner sc = new Scanner(System.in)) {
 
                     System.out.println("Conectado ao Proxy " + proxyHost + ":" + proxyPort);
+                    MenuLogger.escreverLog("Cliente: Conectado ao Proxy " + proxyHost + ":" + proxyPort);
 
                     Object respostaObj = inProxy.readObject();
                     if (respostaObj instanceof String) {
@@ -83,8 +87,9 @@ public class ClienteImpl {
                             System.out.println(resposta);
 
                             if (resposta.equals("Cliente autenticado")) {
+                                MenuLogger.escreverLog("Cliente: Autenticação bem sucedida");
                                 while (true) {
-                                    System.out.println(Menu.exibirMenu());
+                                    System.out.println(MenuLogger.exibirMenu());
 
                                     String opcao = sc.nextLine();
                                     switch (opcao) {
@@ -96,14 +101,20 @@ public class ClienteImpl {
                                             Comando comandoAdicionar = new Comando("adicionar", nome, descricao);
                                             outProxy.writeObject(comandoAdicionar);
                                             outProxy.flush();
+
+                                            Object respostaAdicionar = inProxy.readObject();
+                                            if (respostaAdicionar instanceof OrdemServico) {
+                                                System.out.println("Ordem de Serviço adicionada: " + respostaAdicionar);
+                                            }
                                             break;
                                         case "2":
                                             Comando comandoListar = new Comando("listar");
                                             outProxy.writeObject(comandoListar);
                                             outProxy.flush();
-                                            String respostaCache;
-                                            while (inProxy.readObject() instanceof String && !(respostaCache = (String) inProxy.readObject()).isEmpty()) {
-                                                System.out.println(respostaCache);
+
+                                            Object respostaListar = inProxy.readObject();
+                                            if (respostaListar instanceof String) {
+                                                System.out.println((String) respostaListar);
                                             }
                                             break;
                                         case "3":
@@ -116,6 +127,10 @@ public class ClienteImpl {
                                             Comando comandoAlterar = new Comando("atualizar", String.valueOf(codigo), nome, descricao);
                                             outProxy.writeObject(comandoAlterar);
                                             outProxy.flush();
+                                            Object respostaAlterar = inProxy.readObject();
+                                            if (respostaAlterar instanceof String) {
+                                                System.out.println((String) respostaAlterar);
+                                            }
                                             break;
                                         case "4":
                                             System.out.println("Digite o código da ordem de serviço que deseja excluir: ");
@@ -123,9 +138,9 @@ public class ClienteImpl {
                                             Comando comandoExcluir = new Comando("remover", String.valueOf(codigo));
                                             outProxy.writeObject(comandoExcluir);
                                             outProxy.flush();
-                                            String rp;
-                                            while (inProxy.readObject() instanceof String && !(rp = (String) inProxy.readObject()).isEmpty()) {
-                                                System.out.println(rp);
+                                            Object respostaRemover = inProxy.readObject();
+                                            if (respostaRemover instanceof String) {
+                                                System.out.println((String) respostaRemover);
                                             }
                                             break;
                                         case "5":
@@ -133,23 +148,33 @@ public class ClienteImpl {
                                             Comando comando5 = new Comando("5");
                                             outProxy.writeObject(comando5);
                                             outProxy.flush();
+                                            Object resposta5 = inProxy.readObject();
+                                            if (resposta5 instanceof String) {
+                                                System.out.println((String) resposta5);
+                                            }
                                             break;
                                         case "6":
                                             // Ignorar por enquanto
                                             Comando comando6 = new Comando("6");
                                             outProxy.writeObject(comando6);
                                             outProxy.flush();
+                                            Object resposta6 = inProxy.readObject();
+                                            if (resposta6 instanceof String) {
+                                                System.out.println((String) resposta6);
+                                            }
                                             break;
                                         case "0":
                                             Comando comandoSair = new Comando("0");
                                             outProxy.writeObject(comandoSair);
                                             outProxy.flush();
+                                            MenuLogger.escreverLog("Cliente: Desconectado do Proxy " + proxyHost + ":" + proxyPort);
                                             return;
                                         default:
                                             System.out.println("Opção inválida");
                                     }
                                 }
                             } else {
+                                MenuLogger.escreverLog("Cliente: Autenticação falhou");
                                 System.out.println("Autenticação falhou");
                             }
                         }
