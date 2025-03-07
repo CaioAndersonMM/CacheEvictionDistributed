@@ -25,13 +25,12 @@ public class CacheFIFO {
     }
 
     public OrdemServico buscar(int codigo) {
-        synchronized(this) {
+       
             for (OrdemServico os : cache) {
                 if (os.getCodigo() == codigo) {
                     MenuLogger.escreverLog("Ordem de Serviço encontrada na cache: " + os);
                     return os;
                 }
-            }
         }
         MenuLogger.escreverLog("Ordem de Serviço não encontrada na cache: " + codigo);
         return null;

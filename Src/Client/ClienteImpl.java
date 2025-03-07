@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.InetSocketAddress;
 import java.util.Scanner;
 import Src.MenuLogger;
 import Src.OrdemServico;
@@ -58,133 +59,207 @@ public class ClienteImpl {
                 String[] proxyInfo = proxyLocation.split(":");
                 String proxyHost = proxyInfo[0];
                 int proxyPort = Integer.parseInt(proxyInfo[1]);
+                conectarAoProxy(proxyHost, proxyPort);
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Erro durante a comunicação com o servidor de localização: " + e.getMessage());
+            MenuLogger.escreverLog("Cliente [" + port + "]: Erro durante a comunicação com o servidor de localização: " + e.getMessage());
+        } finally {
+            // Fechar o socket de localização
+            if (locationSocket != null) {
+                try {
+                    locationSocket.close();
+                    MenuLogger.escreverLog("Cliente [" + port + "]: Conexão com o servidor de localização fechada.");
+                } catch (IOException e) {
+                    System.err.println("Erro ao fechar o socket: " + e.getMessage());
+                }
+            }
+        }
+    }
 
-                try (Socket proxySocket = new Socket(proxyHost, proxyPort);
-                     ObjectOutputStream outProxy = new ObjectOutputStream(proxySocket.getOutputStream());
-                     ObjectInputStream inProxy = new ObjectInputStream(proxySocket.getInputStream());
-                     Scanner sc = new Scanner(System.in)) {
+    private void conectarAoProxy(String proxyHost, int proxyPort) {
+        Socket proxySocket = null;
+        try {
+            proxySocket = new Socket();
+            proxySocket.connect(new InetSocketAddress(proxyHost, proxyPort), 5000); // Timeout de 5 segundos
+            System.out.println("Conectado ao Proxy " + proxyHost + ":" + proxyPort);
+            MenuLogger.escreverLog("Cliente [" + port + "]: Conectado ao Proxy " + proxyHost + ":" + proxyPort);
 
-                    System.out.println("Conectado ao Proxy " + proxyHost + ":" + proxyPort);
-                    MenuLogger.escreverLog("Cliente: Conectado ao Proxy " + proxyHost + ":" + proxyPort);
+            try (ObjectOutputStream outProxy = new ObjectOutputStream(proxySocket.getOutputStream());
+                 ObjectInputStream inProxy = new ObjectInputStream(proxySocket.getInputStream());
+                 Scanner sc = new Scanner(System.in)) {
 
-                    Object respostaObj = inProxy.readObject();
-                    if (respostaObj instanceof String) {
-                        String resposta = (String) respostaObj;
-                        System.out.println("Resposta do Proxy: " + resposta);
+                // Receber resposta inicial do proxy
+                Object respostaObj = receberResposta(inProxy);
+                if (respostaObj instanceof String) {
+                    String resposta = (String) respostaObj;
+                    System.out.println("Resposta do Proxy: " + resposta);
 
-                        System.out.println("Qual seu email? ");
-                        String email = sc.nextLine();
-                        System.out.println("Qual sua senha? ");
-                        String senha = sc.nextLine();
-
-                        String mensagem = email + ";" + senha;
-                        outProxy.writeObject(mensagem);
-                        outProxy.flush();
-
-                        respostaObj = inProxy.readObject();
-                        if (respostaObj instanceof String) {
-                            resposta = (String) respostaObj;
-                            System.out.println(resposta);
-
-                            if (resposta.equals("Cliente autenticado")) {
-                                MenuLogger.escreverLog("Cliente: Autenticação bem sucedida");
-                                while (true) {
-                                    System.out.println(MenuLogger.exibirMenu());
-
-                                    String opcao = sc.nextLine();
-                                    switch (opcao) {
-                                        case "1":
-                                            System.out.println("Digite o nome da ordem de serviço: ");
-                                            String nome = sc.nextLine();
-                                            System.out.println("Digite a descrição da ordem de serviço: ");
-                                            String descricao = sc.nextLine();
-                                            Comando comandoAdicionar = new Comando("adicionar", nome, descricao);
-                                            outProxy.writeObject(comandoAdicionar);
-                                            outProxy.flush();
-
-                                            Object respostaAdicionar = inProxy.readObject();
-                                            if (respostaAdicionar instanceof OrdemServico) {
-                                                System.out.println("Ordem de Serviço adicionada: " + respostaAdicionar);
-                                            }
-                                            break;
-                                        case "2":
-                                            Comando comandoListar = new Comando("listar");
-                                            outProxy.writeObject(comandoListar);
-                                            outProxy.flush();
-
-                                            Object respostaListar = inProxy.readObject();
-                                            if (respostaListar instanceof String) {
-                                                System.out.println((String) respostaListar);
-                                            }
-                                            break;
-                                        case "3":
-                                            System.out.println("Digite o código da ordem de serviço que deseja alterar: ");
-                                            int codigo = Integer.parseInt(sc.nextLine().trim());
-                                            System.out.println("Digite o novo nome da ordem de serviço: ");
-                                            nome = sc.nextLine();
-                                            System.out.println("Digite a nova descrição da ordem de serviço: ");
-                                            descricao = sc.nextLine();
-                                            Comando comandoAlterar = new Comando("atualizar", String.valueOf(codigo), nome, descricao);
-                                            outProxy.writeObject(comandoAlterar);
-                                            outProxy.flush();
-                                            Object respostaAlterar = inProxy.readObject();
-                                            if (respostaAlterar instanceof String) {
-                                                System.out.println((String) respostaAlterar);
-                                            }
-                                            break;
-                                        case "4":
-                                            System.out.println("Digite o código da ordem de serviço que deseja excluir: ");
-                                            codigo = Integer.parseInt(sc.nextLine().trim());
-                                            Comando comandoExcluir = new Comando("remover", String.valueOf(codigo));
-                                            outProxy.writeObject(comandoExcluir);
-                                            outProxy.flush();
-                                            Object respostaRemover = inProxy.readObject();
-                                            if (respostaRemover instanceof String) {
-                                                System.out.println((String) respostaRemover);
-                                            }
-                                            break;
-                                        case "5":
-                                            // Ignorar por enquanto
-                                            Comando comando5 = new Comando("5");
-                                            outProxy.writeObject(comando5);
-                                            outProxy.flush();
-                                            Object resposta5 = inProxy.readObject();
-                                            if (resposta5 instanceof String) {
-                                                System.out.println((String) resposta5);
-                                            }
-                                            break;
-                                        case "6":
-                                            // Ignorar por enquanto
-                                            Comando comando6 = new Comando("6");
-                                            outProxy.writeObject(comando6);
-                                            outProxy.flush();
-                                            Object resposta6 = inProxy.readObject();
-                                            if (resposta6 instanceof String) {
-                                                System.out.println((String) resposta6);
-                                            }
-                                            break;
-                                        case "0":
-                                            Comando comandoSair = new Comando("0");
-                                            outProxy.writeObject(comandoSair);
-                                            outProxy.flush();
-                                            MenuLogger.escreverLog("Cliente: Desconectado do Proxy " + proxyHost + ":" + proxyPort);
-                                            return;
-                                        default:
-                                            System.out.println("Opção inválida");
-                                    }
-                                }
-                            } else {
-                                MenuLogger.escreverLog("Cliente: Autenticação falhou");
-                                System.out.println("Autenticação falhou");
-                            }
-                        }
+                    // Autenticar usuário
+                    if (autenticarUsuario(outProxy, inProxy, sc)) {
+                        gerenciarMenu(outProxy, inProxy, sc);
                     }
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
+        } finally {
+            // Fechar o socket do proxy
+            if (proxySocket != null) {
+                try {
+                    proxySocket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private boolean autenticarUsuario(ObjectOutputStream out, ObjectInputStream in, Scanner sc) throws IOException, ClassNotFoundException {
+        System.out.println("Qual seu email? ");
+        String email = sc.nextLine();
+        System.out.println("Qual sua senha? ");
+        String senha = sc.nextLine();
+
+        String mensagem = email + ";" + senha;
+        enviarComando(out, mensagem);
+
+        Object respostaObj = receberResposta(in);
+        if (respostaObj instanceof String) {
+            String resposta = (String) respostaObj;
+            System.out.println(resposta);
+
+            if (resposta.equals("Cliente autenticado")) {
+                MenuLogger.escreverLog("Cliente [" + port + "]: Autenticação bem sucedida");
+                return true;
+            } else {
+                MenuLogger.escreverLog("Cliente [" + port + "]: Autenticação falhou");
+                System.out.println("Autenticação falhou");
+                return false;
+            }
+        }
+        return false;
+    }
+
+    private void gerenciarMenu(ObjectOutputStream out, ObjectInputStream in, Scanner sc) throws IOException, ClassNotFoundException {
+        while (true) {
+            System.out.println(MenuLogger.exibirMenu());
+            String opcao = sc.nextLine();
+
+            switch (OpcaoMenu.fromValor(opcao)) {
+                case ADICIONAR:
+                    adicionarOrdemServico(out, in, sc);
+                    break;
+                case LISTAR:
+                    listarOrdensServico(out, in);
+                    break;
+                case ALTERAR:
+                    alterarOrdemServico(out, in, sc);
+                    break;
+                case EXCLUIR:
+                    excluirOrdemServico(out, in, sc);
+                    break;
+                case SAIR:
+                    enviarComando(out, new Comando("sair"));
+                    MenuLogger.escreverLog("Cliente [" + port + "]: Desconectado do Proxy");
+                    return;
+                default:
+                    System.out.println("Opção inválida");
+            }
+        }
+    }
+
+    private void adicionarOrdemServico(ObjectOutputStream out, ObjectInputStream in, Scanner sc) throws IOException, ClassNotFoundException {
+        System.out.println("Digite o nome da ordem de serviço: ");
+        String nome = sc.nextLine();
+        System.out.println("Digite a descrição da ordem de serviço: ");
+        String descricao = sc.nextLine();
+        Comando comandoAdicionar = new Comando("adicionar", nome, descricao);
+        enviarComando(out, comandoAdicionar);
+
+        Object respostaAdicionar = receberResposta(in);
+        if (respostaAdicionar instanceof OrdemServico) {
+            System.out.println("Ordem de Serviço adicionada: " + respostaAdicionar);
+        }
+    }
+
+    private void listarOrdensServico(ObjectOutputStream out, ObjectInputStream in) throws IOException, ClassNotFoundException {
+        Comando comandoListar = new Comando("listar");
+        enviarComando(out, comandoListar);
+
+        Object respostaListar = receberResposta(in);
+        if (respostaListar instanceof String) {
+            System.out.println((String) respostaListar);
+        }
+    }
+
+    private void alterarOrdemServico(ObjectOutputStream out, ObjectInputStream in, Scanner sc) throws IOException, ClassNotFoundException {
+        System.out.println("Digite o código da ordem de serviço que deseja alterar: ");
+        int codigo = validarEntradaInteira(sc);
+        System.out.println("Digite o novo nome da ordem de serviço: ");
+        String nome = sc.nextLine();
+        System.out.println("Digite a nova descrição da ordem de serviço: ");
+        String descricao = sc.nextLine();
+        Comando comandoAlterar = new Comando("atualizar", String.valueOf(codigo), nome, descricao);
+        enviarComando(out, comandoAlterar);
+
+        Object respostaAlterar = receberResposta(in);
+        if (respostaAlterar instanceof String) {
+            System.out.println((String) respostaAlterar);
+        }
+    }
+
+    private void excluirOrdemServico(ObjectOutputStream out, ObjectInputStream in, Scanner sc) throws IOException, ClassNotFoundException {
+        System.out.println("Digite o código da ordem de serviço que deseja excluir: ");
+        int codigo = validarEntradaInteira(sc);
+        Comando comandoExcluir = new Comando("remover", String.valueOf(codigo));
+        enviarComando(out, comandoExcluir);
+
+        Object respostaRemover = receberResposta(in);
+        if (respostaRemover instanceof String) {
+            System.out.println((String) respostaRemover);
+        }
+    }
+
+    private int validarEntradaInteira(Scanner sc) {
+        while (true) {
+            try {
+                return Integer.parseInt(sc.nextLine().trim());
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada inválida. Digite um número válido.");
+            }
+        }
+    }
+
+    private void enviarComando(ObjectOutputStream out, Object comando) throws IOException {
+        out.writeObject(comando);
+        out.flush();
+    }
+
+    private Object receberResposta(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        return in.readObject();
+    }
+
+    enum OpcaoMenu {
+        ADICIONAR("1"),
+        LISTAR("2"),
+        ALTERAR("3"),
+        EXCLUIR("4"),
+        SAIR("0");
+
+        private final String valor;
+
+        OpcaoMenu(String valor) {
+            this.valor = valor;
+        }
+
+        public static OpcaoMenu fromValor(String valor) {
+            for (OpcaoMenu opcao : OpcaoMenu.values()) {
+                if (opcao.valor.equals(valor)) {
+                    return opcao;
+                }
+            }
+            throw new IllegalArgumentException("Opção inválida: " + valor);
         }
     }
 }
