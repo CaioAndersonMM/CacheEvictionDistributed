@@ -1,8 +1,8 @@
 package Src.Database;
 
 import java.util.LinkedList;
-
 import Src.OrdemServico;
+import Src.MenuLogger;
 
 public class CacheFIFO {
     private final int maxSize;
@@ -14,22 +14,26 @@ public class CacheFIFO {
     }
 
     public void adicionar(OrdemServico os) {
-        synchronized(this){
-        if (cache.size() >= maxSize) {
-            cache.removeFirst();
+        synchronized(this) {
+            if (cache.size() >= maxSize) {
+                cache.removeFirst();
+            }
+            cache.addLast(os);
+            MenuLogger.escreverLog("Ordem de Serviço adicionada à cache: " + os.getNome());
+            MenuLogger.escreverLog("Estado atual da cache: " + gerarStringCache());
         }
-        cache.addLast(os);
-    }
     }
 
     public OrdemServico buscar(int codigo) {
-        synchronized(this){
-        for (OrdemServico os : cache) {
-            if (os.getCodigo() == codigo) { 
-                return os;
+        synchronized(this) {
+            for (OrdemServico os : cache) {
+                if (os.getCodigo() == codigo) {
+                    MenuLogger.escreverLog("Ordem de Serviço encontrada na cache: " + os);
+                    return os;
+                }
             }
         }
-        }
+        MenuLogger.escreverLog("Ordem de Serviço não encontrada na cache: " + codigo);
         return null;
     }
 
@@ -40,12 +44,18 @@ public class CacheFIFO {
         }
         return sb.toString();
     }
-    
 
     public boolean remover(int codigo) {
-        synchronized(this){
-       return  cache.removeIf(os -> os.getCodigo() == codigo);
-    }
+        synchronized(this) {
+            boolean removed = cache.removeIf(os -> os.getCodigo() == codigo);
+            if (removed) {
+                MenuLogger.escreverLog("Ordem de Serviço removida da cache: " + codigo);
+            } else {
+                MenuLogger.escreverLog("Ordem de Serviço não encontrada na cache para remoção: " + codigo);
+            }
+            MenuLogger.escreverLog("Estado atual da cache: " + gerarStringCache());
+            return removed;
+        }
     }
 
     public String gerarStringCache() {
