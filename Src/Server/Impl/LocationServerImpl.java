@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import Src.MenuLogger;
 
 public class LocationServerImpl {
     private String proxyHost;
@@ -27,7 +28,8 @@ public class LocationServerImpl {
         try {
             String localHostAddress = InetAddress.getLocalHost().getHostAddress();
             serverLocation = new ServerSocket(porta, 50, InetAddress.getByName(localHostAddress));
-            System.out.println("Servidor de localização rodando " + serverLocation.getInetAddress().getHostAddress() + ":" + porta);
+            System.out.println("Servidor de Localização rodando " + serverLocation.getInetAddress().getHostAddress() + ":" + porta);
+            MenuLogger.escreverLog("Servidor de Localização rodando " + serverLocation.getInetAddress().getHostAddress() + ":" + porta);
 
             while (socketProxy == null) {
                 try {
@@ -39,6 +41,7 @@ public class LocationServerImpl {
                     Object resposta = in.readObject();
                     if (resposta instanceof String && resposta.equals("Conexão estabelecida com o Proxy")) {
                         System.out.println("Servidor de Localização conectado ao Proxy - esperando clientes");
+                        MenuLogger.escreverLog("Servidor de Localização conectado ao Proxy - esperando clientes");
                         proxyAtivo = true;
                     }
                 } catch (IOException | ClassNotFoundException e) {
@@ -54,6 +57,7 @@ public class LocationServerImpl {
             while (proxyAtivo) {
                 Socket cliente = serverLocation.accept();
                 System.out.println("Cliente conectado: " + cliente.getInetAddress().getHostAddress());
+                MenuLogger.escreverLog("Cliente conectado ao Servidor de Localização: " + cliente.getInetAddress().getHostAddress());
 
                 // Multiplos clientes
                 new Thread(new ClienteThread(cliente)).start();
@@ -66,12 +70,14 @@ public class LocationServerImpl {
         }
 
         System.out.println("Servidor de localização conectado ao Proxy " + proxyHost + ":" + proxyPort);
+        MenuLogger.escreverLog("Servidor de localização conectado ao Proxy " + proxyHost + ":" + proxyPort);
     }
 
     public void enviarMensagemAoProxy(Object message) {
         try {
             out.writeObject(message);
             out.flush();
+            MenuLogger.escreverLog("Location: Mensagem enviada ao Proxy: " + message);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -79,7 +85,9 @@ public class LocationServerImpl {
 
     public Object receberMensagemDoProxy() {
         try {
-            return in.readObject();
+            Object resposta = in.readObject();
+            MenuLogger.escreverLog("Location: Mensagem recebida do Proxy: " + resposta);
+            return resposta;
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             return null;
@@ -117,6 +125,7 @@ public class LocationServerImpl {
 
                     // Envia localização do Proxy para o cliente
                     outCliente.writeObject(host + ":" + porta);
+                    MenuLogger.escreverLog("Location: Localização do Proxy enviada ao cliente: " + host + ":" + porta);
                 }
 
             } catch (IOException e) {
@@ -124,6 +133,7 @@ public class LocationServerImpl {
             } finally {
                 try {
                     cliente.close();
+                    MenuLogger.escreverLog("Location: Conexão com o cliente fechada: " + cliente.getInetAddress().getHostAddress());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
