@@ -160,6 +160,10 @@ public class ClienteImpl {
                     break;
                     case EXIBIRCACHE:
                     exibirCache(out, in);
+                    break;
+                    case BUSCAR:
+                    buscarOrdemServico(out, in, sc);
+                    break;
                 case SAIR:
                     enviarComando(out, new Comando("sair"));
                     MenuLogger.escreverLog("Cliente [" + port + "]: Desconectado do Proxy");
@@ -181,6 +185,20 @@ public class ClienteImpl {
         Object respostaAdicionar = receberResposta(in);
         if (respostaAdicionar instanceof OrdemServico) {
             System.out.println("Ordem de Serviço adicionada: " + respostaAdicionar);
+        }
+    }
+
+    private void buscarOrdemServico(ObjectOutputStream out, ObjectInputStream in, Scanner sc) throws IOException, ClassNotFoundException {
+        System.out.println("Digite o código da ordem de serviço que deseja buscar: ");
+        int codigo = validarEntradaInteira(sc);
+        Comando comandoBuscar = new Comando("buscar", String.valueOf(codigo));
+        enviarComando(out, comandoBuscar);
+
+        Object respostaBuscar = receberResposta(in);
+        if (respostaBuscar instanceof OrdemServico) {
+            System.out.println("Ordem de Serviço encontrada: " + respostaBuscar);
+        } else if (respostaBuscar instanceof String) {
+            System.out.println((String) respostaBuscar);
         }
     }
 
@@ -257,6 +275,7 @@ public class ClienteImpl {
         ALTERAR("3"),
         EXCLUIR("4"),
         EXIBIRCACHE("5"),
+        BUSCAR("6"),
         SAIR("0");
 
         private final String valor;

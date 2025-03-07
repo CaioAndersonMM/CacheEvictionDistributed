@@ -242,20 +242,29 @@ public class ProxyImpl {
                                         outCliente.flush();
                                         MenuLogger.escreverLog("Proxy: Cache exibido");
                                         break;
-                                    case "6":
+                                    case "buscar":
                                         System.out.println(comando);
-                                        outAppServer.writeObject(new Comando("listar"));
-                                        outAppServer.flush();
+                                        int codigobusca = Integer.parseInt(partes[0]);
+                                        OrdemServico os = cache.buscar(codigobusca);
+                                        if(os == null) {
+                                            System.out.println("Ordem de serviço não encontrada na cache");
+                                            outCliente.writeObject("Ordem de serviço não encontrada na cache");
+                                            outCliente.flush();
 
-                                        Object resposta6 = inAppServer.readObject();
-                                        if (resposta6 instanceof String) {
-                                            outCliente.writeObject((String) resposta6);
-                                            outCliente.flush();
-                                        } else {
-                                            System.out.println(
-                                                    "Resposta inesperada do servidor de aplicação: " + resposta6);
-                                            outCliente.writeObject("Erro ao exibir banco de dados.");
-                                            outCliente.flush();
+                                            // buscar na base de dados
+                                            outAppServer.writeObject(new Comando("buscar", String.valueOf(codigobusca)));
+                                            outAppServer.flush();
+                                            Object resposta5 = inAppServer.readObject();
+                                            if (resposta5 instanceof OrdemServico) {
+                                                os = (OrdemServico) resposta5;
+                                                cache.adicionar(os);
+                                            } else {
+                                                System.out.println("Ordem de serviço não encontrada na base de dados");
+                                                outCliente.writeObject("Ordem de serviço não encontrada na base de dados");
+                                                outCliente.flush();
+                                                break;
+                                            }
+                                            MenuLogger.escreverLog("Proxy: Ordem de serviço buscada no banco de dados");
                                         }
                                         MenuLogger.escreverLog("Proxy: Banco de dados exibido");
                                         break;
