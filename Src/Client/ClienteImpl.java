@@ -115,28 +115,32 @@ public class ClienteImpl {
     }
 
     private boolean autenticarUsuario(ObjectOutputStream out, ObjectInputStream in, Scanner sc) throws IOException, ClassNotFoundException {
-        System.out.println("Qual seu email? ");
-        String email = sc.nextLine();
-        System.out.println("Qual sua senha? ");
-        String senha = sc.nextLine();
-
-        String mensagem = email + ";" + senha;
-        enviarComando(out, mensagem);
-
-        Object respostaObj = receberResposta(in);
-        if (respostaObj instanceof String) {
-            String resposta = (String) respostaObj;
-            System.out.println(resposta);
-
-            if (resposta.equals("Cliente autenticado")) {
-                MenuLogger.escreverLog("Cliente [" + port + "]: Autenticação bem sucedida");
-                return true;
-            } else {
-                MenuLogger.escreverLog("Cliente [" + port + "]: Autenticação falhou");
-                System.out.println("Autenticação falhou");
-                return false;
+        int tentativas = 0;
+        while (tentativas < 3) {
+            System.out.println("Qual seu email? ");
+            String email = sc.nextLine();
+            System.out.println("Qual sua senha? ");
+            String senha = sc.nextLine();
+    
+            String mensagem = email + ";" + senha;
+            enviarComando(out, mensagem);
+    
+            Object respostaObj = receberResposta(in);
+            if (respostaObj instanceof String) {
+                String resposta = (String) respostaObj;
+                System.out.println(resposta);
+    
+                if (resposta.equals("Cliente autenticado")) {
+                    MenuLogger.escreverLog("Cliente [" + port + "]: Autenticação bem sucedida");
+                    return true;
+                } else {
+                    MenuLogger.escreverLog("Cliente [" + port + "]: Autenticação falhou");
+                    System.out.println("Autenticação falhou");
+                    tentativas++;
+                }
             }
         }
+        System.out.println("Número máximo de tentativas atingido.");
         return false;
     }
 

@@ -20,8 +20,9 @@ public class ApplicationServerImpl {
         this.enderecoip = enderecoip;
         this.nextId = 1;
         this.database = new DatabaseOs();
-        rodar();
         inicializarOrdemServico();
+        rodar();
+       
     }
 
     public void rodar() {
