@@ -260,8 +260,6 @@ public class ProxyImpl {
                                     OrdemServico os = cache.buscar(codigobusca);
                                     if (os == null) {
                                         System.out.println("Ordem de serviço não encontrada na cache");
-                                        outCliente.writeObject("Ordem de serviço não encontrada na cache");
-                                        outCliente.flush();
         
                                         // buscar na base de dados
                                         outAppServer.writeObject(new Comando("buscar", String.valueOf(codigobusca)));
@@ -270,6 +268,8 @@ public class ProxyImpl {
                                         if (resposta5 instanceof OrdemServico) {
                                             os = (OrdemServico) resposta5;
                                             cache.adicionar(os);
+                                            outCliente.writeObject(os);
+                                            outCliente.flush();
                                         } else {
                                             System.out.println("Ordem de serviço não encontrada na base de dados");
                                             outCliente.writeObject("Ordem de serviço não encontrada na base de dados");
