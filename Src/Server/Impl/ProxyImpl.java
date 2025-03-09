@@ -191,9 +191,8 @@ public class ProxyImpl {
                                     OrdemServico osn = cache.buscar(codigo);
                                     if (osn == null) {
                                         System.out.println("Ordem de serviço não encontrada na cache");
-                                        outCliente.writeObject("Ordem de serviço não encontrada na cache");
-                                        outCliente.flush();
-        
+                                        MenuLogger.escreverLog("Proxy: Ordem de Serviço não encontrada na cache: " + codigo);
+
                                         // buscar na base de dados
                                         outAppServer.writeObject(new Comando("buscar", String.valueOf(codigo)));
                                         outAppServer.flush();
@@ -203,7 +202,8 @@ public class ProxyImpl {
                                             cache.adicionar(osn);
                                         } else {
                                             System.out.println("Ordem de serviço não encontrada na base de dados");
-                                            outCliente.writeObject("Ordem de serviço não encontrada na base de dados");
+                                            MenuLogger.escreverLog("Proxy: Ordem de Serviço não encontrada no banco de dados");
+                                            outCliente.writeObject("Ordem de serviço não encontrada!");
                                             outCliente.flush();
                                             break;
                                         }
@@ -218,7 +218,7 @@ public class ProxyImpl {
                                     outAppServer.flush();
                                     outCliente.writeObject("Ordem de serviço atualizada com sucesso: " + osn);
                                     outCliente.flush();
-                                    MenuLogger.escreverLog("Proxy: Ordem de serviço atualizada " + osn);
+                                    MenuLogger.escreverLog("Proxy: Ordem de serviço atualizada " + osn.getCodigo());
                                     break;
                                 case "remover":
                                     int cod = Integer.parseInt(partes[0]);
@@ -260,8 +260,7 @@ public class ProxyImpl {
                                     OrdemServico os = cache.buscar(codigobusca);
                                     if (os == null) {
                                         System.out.println("Ordem de serviço não encontrada na cache");
-                                        outCliente.writeObject("Ordem de serviço não encontrada na cache");
-                                        outCliente.flush();
+                                        MenuLogger.escreverLog("Proxy: Ordem de serviço não encontrada na cache: " + codigobusca);
         
                                         // buscar na base de dados
                                         outAppServer.writeObject(new Comando("buscar", String.valueOf(codigobusca)));
@@ -270,15 +269,18 @@ public class ProxyImpl {
                                         if (resposta5 instanceof OrdemServico) {
                                             os = (OrdemServico) resposta5;
                                             cache.adicionar(os);
+                                            MenuLogger.escreverLog("Proxy: Ordem de serviço encontrada na Base de Dados " + os.getCodigo());
                                         } else {
                                             System.out.println("Ordem de serviço não encontrada na base de dados");
-                                            outCliente.writeObject("Ordem de serviço não encontrada na base de dados");
+                                            MenuLogger.escreverLog("Proxy: Ordem de serviço não encontrada no banco de dados");
+                                            outCliente.writeObject("Ordem de serviço não encontrada!");
                                             outCliente.flush();
                                             break;
                                         }
-                                        MenuLogger.escreverLog("Proxy: Ordem de serviço buscada no banco de dados");
                                     }
-                                    MenuLogger.escreverLog("Proxy: Banco de dados exibido");
+                                    outCliente.writeObject(os);
+                                    outCliente.flush();
+                                    MenuLogger.escreverLog("Proxy: Ordem de serviço enviada ao cliente");
                                     break;
                                 case "0":
                                 case "sair":
