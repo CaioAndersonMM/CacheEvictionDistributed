@@ -1,79 +1,17 @@
-2025-03-07 15:08:42 - Servidor de Localização rodando 127.0.1.1:5000
-2025-03-07 15:08:45 - Servidor de localização conectado ao Proxy 127.0.1.1:5005
-2025-03-07 15:08:56 - Servidor de Aplicação rodando 127.0.1.1 : 5055
-2025-03-07 15:08:57 - Novo cliente conectado ao Servidor de Aplicação: 127.0.0.1:47342
-2025-03-07 15:08:57 - Proxy foi conectado ao Servidor de Aplicação 127.0.1.1:5055
-2025-03-07 15:08:58 - Novo cliente conectado ao Proxy 127.0.0.1 : 39162
-2025-03-07 15:08:58 - Servidor de Localização conectado ao Proxy - esperando clientes
-2025-03-07 15:09:00 - Cliente conectado ao Servidor de Localização: 127.0.0.1
-2025-03-07 15:09:00 - Cliente: Conectado ao Servidor de Localização 127.0.1.1:5000
-2025-03-07 15:09:00 - Location: Mensagem enviada ao Proxy: Novo cliente querendo conexão, envie localização
-2025-03-07 15:09:00 - Proxy: Localização do Proxy enviada ao cliente 127.0.1.1:5005
-2025-03-07 15:09:00 - Location: Mensagem recebida do Proxy: 127.0.1.1:5005
-2025-03-07 15:09:00 - Location: Localização do Proxy enviada ao cliente: 127.0.1.1:5005
-2025-03-07 15:09:00 - Location: Conexão com o cliente fechada: 127.0.0.1
-2025-03-07 15:09:00 - Cliente: Pedido de localização enviado ao Servidor de Localização
-2025-03-07 15:09:00 - Cliente: Localização do Proxy recebida: 127.0.1.1:5005
-2025-03-07 15:09:00 - Novo cliente conectado ao Proxy 127.0.0.1 : 39174
-2025-03-07 15:09:00 - Cliente: Conectado ao Proxy 127.0.1.1:5005
-2025-03-07 15:09:03 - Cliente conectado ao Servidor de Localização: 127.0.0.1
-2025-03-07 15:09:03 - Cliente: Conectado ao Servidor de Localização 127.0.1.1:5000
-2025-03-07 15:09:03 - Location: Mensagem enviada ao Proxy: Novo cliente querendo conexão, envie localização
-2025-03-07 15:09:03 - Proxy: Localização do Proxy enviada ao cliente 127.0.1.1:5005
-2025-03-07 15:09:03 - Location: Mensagem recebida do Proxy: 127.0.1.1:5005
-2025-03-07 15:09:03 - Location: Localização do Proxy enviada ao cliente: 127.0.1.1:5005
-2025-03-07 15:09:03 - Location: Conexão com o cliente fechada: 127.0.0.1
-2025-03-07 15:09:03 - Cliente: Pedido de localização enviado ao Servidor de Localização
-2025-03-07 15:09:03 - Cliente: Localização do Proxy recebida: 127.0.1.1:5005
-2025-03-07 15:09:03 - Novo cliente conectado ao Proxy 127.0.0.1 : 39178
-2025-03-07 15:09:03 - Cliente: Conectado ao Proxy 127.0.1.1:5005
-2025-03-07 16:16:12 - Servidor de Localização rodando 127.0.1.1:5000
-2025-03-07 16:16:15 - Servidor de Aplicação rodando 127.0.1.1 : 5055
-2025-03-07 16:16:15 - Novo cliente conectado ao Servidor de Aplicação: 127.0.0.1:35812
-2025-03-07 16:16:15 - Proxy foi conectado ao Servidor de Aplicação 127.0.1.1:5055
-2025-03-07 16:16:19 - Novo cliente conectado ao Proxy 127.0.0.1 : 36720
-2025-03-07 16:16:19 - Servidor de Localização conectado ao Proxy - esperando clientes
-2025-03-07 16:16:21 - Cliente conectado ao Servidor de Localização: 127.0.0.1
-2025-03-07 16:16:21 - Cliente: Conectado ao Servidor de Localização 127.0.1.1:5000
-2025-03-07 16:16:21 - Location: Mensagem enviada ao Proxy: Novo cliente querendo conexão, envie localização
-2025-03-07 16:16:21 - Location: Mensagem recebida do Proxy: 127.0.1.1:5005
-2025-03-07 16:16:21 - Proxy: Localização do Proxy enviada ao cliente 127.0.1.1:5005
-2025-03-07 16:16:21 - Location: Localização do Proxy enviada ao cliente: 127.0.1.1:5005
-2025-03-07 16:16:21 - Location: Conexão com o cliente fechada: 127.0.0.1
-2025-03-07 16:16:21 - Cliente: Pedido de localização enviado ao Servidor de Localização
-2025-03-07 16:16:21 - Cliente: Localização do Proxy recebida: 127.0.1.1:5005
-2025-03-07 16:16:21 - Novo cliente conectado ao Proxy 127.0.0.1 : 36732
-2025-03-07 16:16:21 - Cliente: Conectado ao Proxy 127.0.1.1:5005
-2025-03-07 16:16:25 - Cliente conectado ao Servidor de Localização: 127.0.0.1
-2025-03-07 16:16:25 - Cliente: Conectado ao Servidor de Localização 127.0.1.1:5000
-2025-03-07 16:16:25 - Location: Mensagem enviada ao Proxy: Novo cliente querendo conexão, envie localização
-2025-03-07 16:16:25 - Proxy: Localização do Proxy enviada ao cliente 127.0.1.1:5005
-2025-03-07 16:16:25 - Location: Mensagem recebida do Proxy: 127.0.1.1:5005
-2025-03-07 16:16:25 - Location: Localização do Proxy enviada ao cliente: 127.0.1.1:5005
-2025-03-07 16:16:25 - Location: Conexão com o cliente fechada: 127.0.0.1
-2025-03-07 16:16:25 - Cliente: Pedido de localização enviado ao Servidor de Localização
-2025-03-07 16:16:25 - Cliente: Localização do Proxy recebida: 127.0.1.1:5005
-2025-03-07 16:16:25 - Novo cliente conectado ao Proxy 127.0.0.1 : 36744
-2025-03-07 16:16:25 - Cliente: Conectado ao Proxy 127.0.1.1:5005
-2025-03-07 16:16:27 - Cliente conectado ao Servidor de Localização: 127.0.0.1
-2025-03-07 16:16:27 - Cliente: Conectado ao Servidor de Localização 127.0.1.1:5000
-2025-03-07 16:16:27 - Location: Mensagem enviada ao Proxy: Novo cliente querendo conexão, envie localização
-2025-03-07 16:16:27 - Proxy: Localização do Proxy enviada ao cliente 127.0.1.1:5005
-2025-03-07 16:16:27 - Location: Mensagem recebida do Proxy: 127.0.1.1:5005
-2025-03-07 16:16:27 - Location: Localização do Proxy enviada ao cliente: 127.0.1.1:5005
-2025-03-07 16:16:27 - Location: Conexão com o cliente fechada: 127.0.0.1
-2025-03-07 16:16:27 - Cliente: Pedido de localização enviado ao Servidor de Localização
-2025-03-07 16:16:27 - Cliente: Localização do Proxy recebida: 127.0.1.1:5005
-2025-03-07 16:16:27 - Novo cliente conectado ao Proxy 127.0.0.1 : 45394
-2025-03-07 16:16:27 - Cliente: Conectado ao Proxy 127.0.1.1:5005
-2025-03-07 16:16:29 - Cliente conectado ao Servidor de Localização: 127.0.0.1
-2025-03-07 16:16:29 - Cliente: Conectado ao Servidor de Localização 127.0.1.1:5000
-2025-03-07 16:16:29 - Location: Mensagem enviada ao Proxy: Novo cliente querendo conexão, envie localização
-2025-03-07 16:16:29 - Proxy: Localização do Proxy enviada ao cliente 127.0.1.1:5005
-2025-03-07 16:16:29 - Location: Mensagem recebida do Proxy: 127.0.1.1:5005
-2025-03-07 16:16:29 - Location: Localização do Proxy enviada ao cliente: 127.0.1.1:5005
-2025-03-07 16:16:29 - Location: Conexão com o cliente fechada: 127.0.0.1
-2025-03-07 16:16:29 - Cliente: Pedido de localização enviado ao Servidor de Localização
-2025-03-07 16:16:29 - Cliente: Localização do Proxy recebida: 127.0.1.1:5005
-2025-03-07 16:16:29 - Novo cliente conectado ao Proxy 127.0.0.1 : 45410
-2025-03-07 16:16:29 - Cliente: Conectado ao Proxy 127.0.1.1:5005
+2025-03-09 11:02:13 - Servidor de Localização rodando 127.0.1.1:5000
+2025-03-09 11:02:16 - Servidor de localização conectado ao Proxy 127.0.1.1:5005
+2025-03-09 11:02:52 - Servidor de Localização rodando 127.0.1.1:5000
+2025-03-09 11:02:56 - Servidor de Aplicação rodando 127.0.1.1 : 5055
+2025-03-09 11:02:57 - Novo cliente conectado ao Servidor de Aplicação: 127.0.0.1:53110
+2025-03-09 11:02:57 - Proxy foi conectado ao Servidor de Aplicação 127.0.1.1:5055
+2025-03-09 11:02:58 - Novo cliente conectado ao Proxy 127.0.0.1 : 47698
+2025-03-09 11:02:58 - Servidor de Localização conectado ao Proxy - esperando clientes
+2025-03-09 11:03:06 - Cliente conectado ao Servidor de Localização: 127.0.0.1
+2025-03-09 11:03:06 - Cliente: Conectado ao Servidor de Localização 127.0.1.1:5000
+2025-03-09 11:03:06 - Location: Mensagem enviada ao Proxy: Novo cliente querendo conexão, envie localização
+2025-03-09 11:03:06 - Proxy: Localização do Proxy enviada ao cliente 127.0.1.1:5005
+2025-03-09 11:03:06 - Location: Mensagem recebida do Proxy: 127.0.1.1:5005
+2025-03-09 11:03:06 - Location: Localização do Proxy enviada ao cliente: 127.0.1.1:5005
+2025-03-09 11:03:06 - Location: Conexão com o cliente fechada: 127.0.0.1
+2025-03-09 11:03:06 - Cliente [5001]: Erro durante a comunicação com o servidor de localização: Broken pipe
+2025-03-09 11:03:06 - Cliente [5001]: Conexão com o servidor de localização fechada.

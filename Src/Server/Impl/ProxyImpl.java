@@ -26,6 +26,7 @@ public class ProxyImpl {
         this.portaAplicacao = portaAplicacao;
         conectarAplicacao();
         rodar();
+        iniciarlizarCache();
        
     }
 
@@ -301,5 +302,30 @@ public class ProxyImpl {
                 }
             }
         }
+    }
+
+    private void iniciarlizarCache()
+    {
+        
+            for(int i =1; i<=30; i++)
+            {    
+            try {
+                outAppServer.writeObject(new Comando("buscar", String.valueOf(i)));
+                outAppServer.flush();
+                Object resposta5 = inAppServer.readObject();
+                if (resposta5 instanceof OrdemServico) {
+                    OrdemServico os = (OrdemServico) resposta5;
+                    cache.adicionar(os);
+                    MenuLogger.escreverLog("Proxy: Ordem de serviço adicionada ao cache: " + os);
+                } else {
+                    System.out.println("Ordem de serviço não encontrada na base de dados");
+                    MenuLogger.escreverLog("Proxy: Ordem de serviço  nao encontrada no banco de dados");
+                }
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            
+        }
+       
     }
 }

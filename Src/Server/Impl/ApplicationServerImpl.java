@@ -21,6 +21,7 @@ public class ApplicationServerImpl {
         this.nextId = 1;
         this.database = new DatabaseOs();
         rodar();
+        inicializarOrdemServico();
     }
 
     public void rodar() {
@@ -114,6 +115,12 @@ public class ApplicationServerImpl {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    public void inicializarOrdemServico() {
+        for (int i = 0; i < 100; i++) {
+            database.adicionar(new OrdemServico(nextId++, "OS " + i, "Descrição " + i));
         }
     }
 }
