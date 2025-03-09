@@ -1,0 +1,389 @@
+2025-03-09 16:50:53 - Servidor de Aplicação rodando 127.0.1.1 : 5055
+2025-03-09 16:50:59 - Servidor de Localização rodando 127.0.1.1:5000
+2025-03-09 16:51:00 - Cliente: Conectado ao Servidor de Localização 127.0.1.1:5000
+2025-03-09 16:51:03 - Novo cliente conectado ao Servidor de Aplicação: 127.0.0.1:44694
+2025-03-09 16:51:03 - Proxy foi conectado ao Servidor de Aplicação 127.0.1.1:5055
+2025-03-09 16:51:03 - ServerApp: Buscando Ordem de Serviço: 1
+2025-03-09 16:51:03 - Cache: Ordem de Serviço adicionada: 1
+2025-03-09 16:51:03 - Estado atual da cache: {cod = 1 | OS 0} - 
+2025-03-09 16:51:03 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:         1           
+|| Nome:        OS 0            
+|| Descrição:   Descrição 0     
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:03 - ServerApp: Buscando Ordem de Serviço: 2
+2025-03-09 16:51:03 - Cache: Ordem de Serviço adicionada: 2
+2025-03-09 16:51:03 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - 
+2025-03-09 16:51:03 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:         2           
+|| Nome:        OS 1            
+|| Descrição:   Descrição 1     
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:03 - ServerApp: Buscando Ordem de Serviço: 3
+2025-03-09 16:51:03 - Cache: Ordem de Serviço adicionada: 3
+2025-03-09 16:51:03 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - 
+2025-03-09 16:51:03 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:         3           
+|| Nome:        OS 2            
+|| Descrição:   Descrição 2     
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:03 - ServerApp: Buscando Ordem de Serviço: 4
+2025-03-09 16:51:03 - Cache: Ordem de Serviço adicionada: 4
+2025-03-09 16:51:03 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - 
+2025-03-09 16:51:03 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:         4           
+|| Nome:        OS 3            
+|| Descrição:   Descrição 3     
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:03 - ServerApp: Buscando Ordem de Serviço: 5
+2025-03-09 16:51:03 - Cache: Ordem de Serviço adicionada: 5
+2025-03-09 16:51:03 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - 
+2025-03-09 16:51:03 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:         5           
+|| Nome:        OS 4            
+|| Descrição:   Descrição 4     
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:03 - ServerApp: Buscando Ordem de Serviço: 6
+2025-03-09 16:51:03 - Cache: Ordem de Serviço adicionada: 6
+2025-03-09 16:51:03 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - 
+2025-03-09 16:51:03 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:         6           
+|| Nome:        OS 5            
+|| Descrição:   Descrição 5     
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:03 - ServerApp: Buscando Ordem de Serviço: 7
+2025-03-09 16:51:03 - Cache: Ordem de Serviço adicionada: 7
+2025-03-09 16:51:03 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - , {cod = 7 | OS 6} - 
+2025-03-09 16:51:03 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:         7           
+|| Nome:        OS 6            
+|| Descrição:   Descrição 6     
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:03 - ServerApp: Buscando Ordem de Serviço: 8
+2025-03-09 16:51:03 - Cache: Ordem de Serviço adicionada: 8
+2025-03-09 16:51:03 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - , {cod = 7 | OS 6} - , {cod = 8 | OS 7} - 
+2025-03-09 16:51:03 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:         8           
+|| Nome:        OS 7            
+|| Descrição:   Descrição 7     
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:03 - ServerApp: Buscando Ordem de Serviço: 9
+2025-03-09 16:51:03 - Cache: Ordem de Serviço adicionada: 9
+2025-03-09 16:51:03 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - , {cod = 7 | OS 6} - , {cod = 8 | OS 7} - , {cod = 9 | OS 8} - 
+2025-03-09 16:51:03 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:         9           
+|| Nome:        OS 8            
+|| Descrição:   Descrição 8     
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:03 - ServerApp: Buscando Ordem de Serviço: 10
+2025-03-09 16:51:03 - Cache: Ordem de Serviço adicionada: 10
+2025-03-09 16:51:03 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - , {cod = 7 | OS 6} - , {cod = 8 | OS 7} - , {cod = 9 | OS 8} - , {cod = 10 | OS 9} - 
+2025-03-09 16:51:03 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:        10           
+|| Nome:        OS 9            
+|| Descrição:   Descrição 9     
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:03 - ServerApp: Buscando Ordem de Serviço: 11
+2025-03-09 16:51:03 - Cache: Ordem de Serviço adicionada: 11
+2025-03-09 16:51:03 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - , {cod = 7 | OS 6} - , {cod = 8 | OS 7} - , {cod = 9 | OS 8} - , {cod = 10 | OS 9} - , {cod = 11 | OS 10} - 
+2025-03-09 16:51:03 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:        11           
+|| Nome:        OS 10           
+|| Descrição:   Descrição 10    
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:03 - ServerApp: Buscando Ordem de Serviço: 12
+2025-03-09 16:51:03 - Cache: Ordem de Serviço adicionada: 12
+2025-03-09 16:51:03 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - , {cod = 7 | OS 6} - , {cod = 8 | OS 7} - , {cod = 9 | OS 8} - , {cod = 10 | OS 9} - , {cod = 11 | OS 10} - , {cod = 12 | OS 11} - 
+2025-03-09 16:51:03 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:        12           
+|| Nome:        OS 11           
+|| Descrição:   Descrição 11    
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:03 - ServerApp: Buscando Ordem de Serviço: 13
+2025-03-09 16:51:03 - Cache: Ordem de Serviço adicionada: 13
+2025-03-09 16:51:03 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - , {cod = 7 | OS 6} - , {cod = 8 | OS 7} - , {cod = 9 | OS 8} - , {cod = 10 | OS 9} - , {cod = 11 | OS 10} - , {cod = 12 | OS 11} - , {cod = 13 | OS 12} - 
+2025-03-09 16:51:03 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:        13           
+|| Nome:        OS 12           
+|| Descrição:   Descrição 12    
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:03 - ServerApp: Buscando Ordem de Serviço: 14
+2025-03-09 16:51:03 - Cache: Ordem de Serviço adicionada: 14
+2025-03-09 16:51:03 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - , {cod = 7 | OS 6} - , {cod = 8 | OS 7} - , {cod = 9 | OS 8} - , {cod = 10 | OS 9} - , {cod = 11 | OS 10} - , {cod = 12 | OS 11} - , {cod = 13 | OS 12} - , {cod = 14 | OS 13} - 
+2025-03-09 16:51:03 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:        14           
+|| Nome:        OS 13           
+|| Descrição:   Descrição 13    
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:03 - ServerApp: Buscando Ordem de Serviço: 15
+2025-03-09 16:51:03 - Cache: Ordem de Serviço adicionada: 15
+2025-03-09 16:51:03 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - , {cod = 7 | OS 6} - , {cod = 8 | OS 7} - , {cod = 9 | OS 8} - , {cod = 10 | OS 9} - , {cod = 11 | OS 10} - , {cod = 12 | OS 11} - , {cod = 13 | OS 12} - , {cod = 14 | OS 13} - , {cod = 15 | OS 14} - 
+2025-03-09 16:51:03 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:        15           
+|| Nome:        OS 14           
+|| Descrição:   Descrição 14    
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:03 - ServerApp: Buscando Ordem de Serviço: 16
+2025-03-09 16:51:04 - Cache: Ordem de Serviço adicionada: 16
+2025-03-09 16:51:04 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - , {cod = 7 | OS 6} - , {cod = 8 | OS 7} - , {cod = 9 | OS 8} - , {cod = 10 | OS 9} - , {cod = 11 | OS 10} - , {cod = 12 | OS 11} - , {cod = 13 | OS 12} - , {cod = 14 | OS 13} - , {cod = 15 | OS 14} - , {cod = 16 | OS 15} - 
+2025-03-09 16:51:04 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:        16           
+|| Nome:        OS 15           
+|| Descrição:   Descrição 15    
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:04 - ServerApp: Buscando Ordem de Serviço: 17
+2025-03-09 16:51:04 - Cache: Ordem de Serviço adicionada: 17
+2025-03-09 16:51:04 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - , {cod = 7 | OS 6} - , {cod = 8 | OS 7} - , {cod = 9 | OS 8} - , {cod = 10 | OS 9} - , {cod = 11 | OS 10} - , {cod = 12 | OS 11} - , {cod = 13 | OS 12} - , {cod = 14 | OS 13} - , {cod = 15 | OS 14} - , {cod = 16 | OS 15} - , {cod = 17 | OS 16} - 
+2025-03-09 16:51:04 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:        17           
+|| Nome:        OS 16           
+|| Descrição:   Descrição 16    
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:04 - ServerApp: Buscando Ordem de Serviço: 18
+2025-03-09 16:51:04 - Cache: Ordem de Serviço adicionada: 18
+2025-03-09 16:51:04 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - , {cod = 7 | OS 6} - , {cod = 8 | OS 7} - , {cod = 9 | OS 8} - , {cod = 10 | OS 9} - , {cod = 11 | OS 10} - , {cod = 12 | OS 11} - , {cod = 13 | OS 12} - , {cod = 14 | OS 13} - , {cod = 15 | OS 14} - , {cod = 16 | OS 15} - , {cod = 17 | OS 16} - , {cod = 18 | OS 17} - 
+2025-03-09 16:51:04 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:        18           
+|| Nome:        OS 17           
+|| Descrição:   Descrição 17    
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:04 - ServerApp: Buscando Ordem de Serviço: 19
+2025-03-09 16:51:04 - Cache: Ordem de Serviço adicionada: 19
+2025-03-09 16:51:04 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - , {cod = 7 | OS 6} - , {cod = 8 | OS 7} - , {cod = 9 | OS 8} - , {cod = 10 | OS 9} - , {cod = 11 | OS 10} - , {cod = 12 | OS 11} - , {cod = 13 | OS 12} - , {cod = 14 | OS 13} - , {cod = 15 | OS 14} - , {cod = 16 | OS 15} - , {cod = 17 | OS 16} - , {cod = 18 | OS 17} - , {cod = 19 | OS 18} - 
+2025-03-09 16:51:04 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:        19           
+|| Nome:        OS 18           
+|| Descrição:   Descrição 18    
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:04 - ServerApp: Buscando Ordem de Serviço: 20
+2025-03-09 16:51:04 - Cache: Ordem de Serviço adicionada: 20
+2025-03-09 16:51:04 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - , {cod = 7 | OS 6} - , {cod = 8 | OS 7} - , {cod = 9 | OS 8} - , {cod = 10 | OS 9} - , {cod = 11 | OS 10} - , {cod = 12 | OS 11} - , {cod = 13 | OS 12} - , {cod = 14 | OS 13} - , {cod = 15 | OS 14} - , {cod = 16 | OS 15} - , {cod = 17 | OS 16} - , {cod = 18 | OS 17} - , {cod = 19 | OS 18} - , {cod = 20 | OS 19} - 
+2025-03-09 16:51:04 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:        20           
+|| Nome:        OS 19           
+|| Descrição:   Descrição 19    
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:04 - ServerApp: Buscando Ordem de Serviço: 21
+2025-03-09 16:51:04 - Cache: Ordem de Serviço adicionada: 21
+2025-03-09 16:51:04 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - , {cod = 7 | OS 6} - , {cod = 8 | OS 7} - , {cod = 9 | OS 8} - , {cod = 10 | OS 9} - , {cod = 11 | OS 10} - , {cod = 12 | OS 11} - , {cod = 13 | OS 12} - , {cod = 14 | OS 13} - , {cod = 15 | OS 14} - , {cod = 16 | OS 15} - , {cod = 17 | OS 16} - , {cod = 18 | OS 17} - , {cod = 19 | OS 18} - , {cod = 20 | OS 19} - , {cod = 21 | OS 20} - 
+2025-03-09 16:51:04 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:        21           
+|| Nome:        OS 20           
+|| Descrição:   Descrição 20    
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:04 - ServerApp: Buscando Ordem de Serviço: 22
+2025-03-09 16:51:04 - Cache: Ordem de Serviço adicionada: 22
+2025-03-09 16:51:04 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - , {cod = 7 | OS 6} - , {cod = 8 | OS 7} - , {cod = 9 | OS 8} - , {cod = 10 | OS 9} - , {cod = 11 | OS 10} - , {cod = 12 | OS 11} - , {cod = 13 | OS 12} - , {cod = 14 | OS 13} - , {cod = 15 | OS 14} - , {cod = 16 | OS 15} - , {cod = 17 | OS 16} - , {cod = 18 | OS 17} - , {cod = 19 | OS 18} - , {cod = 20 | OS 19} - , {cod = 21 | OS 20} - , {cod = 22 | OS 21} - 
+2025-03-09 16:51:04 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:        22           
+|| Nome:        OS 21           
+|| Descrição:   Descrição 21    
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:04 - ServerApp: Buscando Ordem de Serviço: 23
+2025-03-09 16:51:04 - Cache: Ordem de Serviço adicionada: 23
+2025-03-09 16:51:04 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - , {cod = 7 | OS 6} - , {cod = 8 | OS 7} - , {cod = 9 | OS 8} - , {cod = 10 | OS 9} - , {cod = 11 | OS 10} - , {cod = 12 | OS 11} - , {cod = 13 | OS 12} - , {cod = 14 | OS 13} - , {cod = 15 | OS 14} - , {cod = 16 | OS 15} - , {cod = 17 | OS 16} - , {cod = 18 | OS 17} - , {cod = 19 | OS 18} - , {cod = 20 | OS 19} - , {cod = 21 | OS 20} - , {cod = 22 | OS 21} - , {cod = 23 | OS 22} - 
+2025-03-09 16:51:04 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:        23           
+|| Nome:        OS 22           
+|| Descrição:   Descrição 22    
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:04 - ServerApp: Buscando Ordem de Serviço: 24
+2025-03-09 16:51:04 - Cache: Ordem de Serviço adicionada: 24
+2025-03-09 16:51:04 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - , {cod = 7 | OS 6} - , {cod = 8 | OS 7} - , {cod = 9 | OS 8} - , {cod = 10 | OS 9} - , {cod = 11 | OS 10} - , {cod = 12 | OS 11} - , {cod = 13 | OS 12} - , {cod = 14 | OS 13} - , {cod = 15 | OS 14} - , {cod = 16 | OS 15} - , {cod = 17 | OS 16} - , {cod = 18 | OS 17} - , {cod = 19 | OS 18} - , {cod = 20 | OS 19} - , {cod = 21 | OS 20} - , {cod = 22 | OS 21} - , {cod = 23 | OS 22} - , {cod = 24 | OS 23} - 
+2025-03-09 16:51:04 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:        24           
+|| Nome:        OS 23           
+|| Descrição:   Descrição 23    
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:04 - ServerApp: Buscando Ordem de Serviço: 25
+2025-03-09 16:51:04 - Cache: Ordem de Serviço adicionada: 25
+2025-03-09 16:51:04 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - , {cod = 7 | OS 6} - , {cod = 8 | OS 7} - , {cod = 9 | OS 8} - , {cod = 10 | OS 9} - , {cod = 11 | OS 10} - , {cod = 12 | OS 11} - , {cod = 13 | OS 12} - , {cod = 14 | OS 13} - , {cod = 15 | OS 14} - , {cod = 16 | OS 15} - , {cod = 17 | OS 16} - , {cod = 18 | OS 17} - , {cod = 19 | OS 18} - , {cod = 20 | OS 19} - , {cod = 21 | OS 20} - , {cod = 22 | OS 21} - , {cod = 23 | OS 22} - , {cod = 24 | OS 23} - , {cod = 25 | OS 24} - 
+2025-03-09 16:51:04 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:        25           
+|| Nome:        OS 24           
+|| Descrição:   Descrição 24    
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:04 - ServerApp: Buscando Ordem de Serviço: 26
+2025-03-09 16:51:04 - Cache: Ordem de Serviço adicionada: 26
+2025-03-09 16:51:04 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - , {cod = 7 | OS 6} - , {cod = 8 | OS 7} - , {cod = 9 | OS 8} - , {cod = 10 | OS 9} - , {cod = 11 | OS 10} - , {cod = 12 | OS 11} - , {cod = 13 | OS 12} - , {cod = 14 | OS 13} - , {cod = 15 | OS 14} - , {cod = 16 | OS 15} - , {cod = 17 | OS 16} - , {cod = 18 | OS 17} - , {cod = 19 | OS 18} - , {cod = 20 | OS 19} - , {cod = 21 | OS 20} - , {cod = 22 | OS 21} - , {cod = 23 | OS 22} - , {cod = 24 | OS 23} - , {cod = 25 | OS 24} - , {cod = 26 | OS 25} - 
+2025-03-09 16:51:04 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:        26           
+|| Nome:        OS 25           
+|| Descrição:   Descrição 25    
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:04 - ServerApp: Buscando Ordem de Serviço: 27
+2025-03-09 16:51:04 - Cache: Ordem de Serviço adicionada: 27
+2025-03-09 16:51:04 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - , {cod = 7 | OS 6} - , {cod = 8 | OS 7} - , {cod = 9 | OS 8} - , {cod = 10 | OS 9} - , {cod = 11 | OS 10} - , {cod = 12 | OS 11} - , {cod = 13 | OS 12} - , {cod = 14 | OS 13} - , {cod = 15 | OS 14} - , {cod = 16 | OS 15} - , {cod = 17 | OS 16} - , {cod = 18 | OS 17} - , {cod = 19 | OS 18} - , {cod = 20 | OS 19} - , {cod = 21 | OS 20} - , {cod = 22 | OS 21} - , {cod = 23 | OS 22} - , {cod = 24 | OS 23} - , {cod = 25 | OS 24} - , {cod = 26 | OS 25} - , {cod = 27 | OS 26} - 
+2025-03-09 16:51:04 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:        27           
+|| Nome:        OS 26           
+|| Descrição:   Descrição 26    
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:04 - ServerApp: Buscando Ordem de Serviço: 28
+2025-03-09 16:51:04 - Cache: Ordem de Serviço adicionada: 28
+2025-03-09 16:51:04 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - , {cod = 7 | OS 6} - , {cod = 8 | OS 7} - , {cod = 9 | OS 8} - , {cod = 10 | OS 9} - , {cod = 11 | OS 10} - , {cod = 12 | OS 11} - , {cod = 13 | OS 12} - , {cod = 14 | OS 13} - , {cod = 15 | OS 14} - , {cod = 16 | OS 15} - , {cod = 17 | OS 16} - , {cod = 18 | OS 17} - , {cod = 19 | OS 18} - , {cod = 20 | OS 19} - , {cod = 21 | OS 20} - , {cod = 22 | OS 21} - , {cod = 23 | OS 22} - , {cod = 24 | OS 23} - , {cod = 25 | OS 24} - , {cod = 26 | OS 25} - , {cod = 27 | OS 26} - , {cod = 28 | OS 27} - 
+2025-03-09 16:51:04 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:        28           
+|| Nome:        OS 27           
+|| Descrição:   Descrição 27    
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:04 - ServerApp: Buscando Ordem de Serviço: 29
+2025-03-09 16:51:04 - Cache: Ordem de Serviço adicionada: 29
+2025-03-09 16:51:04 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - , {cod = 7 | OS 6} - , {cod = 8 | OS 7} - , {cod = 9 | OS 8} - , {cod = 10 | OS 9} - , {cod = 11 | OS 10} - , {cod = 12 | OS 11} - , {cod = 13 | OS 12} - , {cod = 14 | OS 13} - , {cod = 15 | OS 14} - , {cod = 16 | OS 15} - , {cod = 17 | OS 16} - , {cod = 18 | OS 17} - , {cod = 19 | OS 18} - , {cod = 20 | OS 19} - , {cod = 21 | OS 20} - , {cod = 22 | OS 21} - , {cod = 23 | OS 22} - , {cod = 24 | OS 23} - , {cod = 25 | OS 24} - , {cod = 26 | OS 25} - , {cod = 27 | OS 26} - , {cod = 28 | OS 27} - , {cod = 29 | OS 28} - 
+2025-03-09 16:51:04 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:        29           
+|| Nome:        OS 28           
+|| Descrição:   Descrição 28    
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:04 - ServerApp: Buscando Ordem de Serviço: 30
+2025-03-09 16:51:04 - Cache: Ordem de Serviço adicionada: 30
+2025-03-09 16:51:04 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - , {cod = 7 | OS 6} - , {cod = 8 | OS 7} - , {cod = 9 | OS 8} - , {cod = 10 | OS 9} - , {cod = 11 | OS 10} - , {cod = 12 | OS 11} - , {cod = 13 | OS 12} - , {cod = 14 | OS 13} - , {cod = 15 | OS 14} - , {cod = 16 | OS 15} - , {cod = 17 | OS 16} - , {cod = 18 | OS 17} - , {cod = 19 | OS 18} - , {cod = 20 | OS 19} - , {cod = 21 | OS 20} - , {cod = 22 | OS 21} - , {cod = 23 | OS 22} - , {cod = 24 | OS 23} - , {cod = 25 | OS 24} - , {cod = 26 | OS 25} - , {cod = 27 | OS 26} - , {cod = 28 | OS 27} - , {cod = 29 | OS 28} - , {cod = 30 | OS 29} - 
+2025-03-09 16:51:04 - Proxy: Ordem de serviço adicionada ao cache: +=============================+
+||       Ordem de Serviço      
+===============================
+|| Código:        30           
+|| Nome:        OS 29           
+|| Descrição:   Descrição 29    
+|| Hora:        09/03/2025          
++=============================+
+
+2025-03-09 16:51:04 - Novo cliente conectado ao Proxy 127.0.0.1 : 37480
+2025-03-09 16:51:05 - Servidor de Localização conectado ao Proxy - esperando clientes
+2025-03-09 16:51:05 - Cliente conectado ao Servidor de Localização: 127.0.0.1
+2025-03-09 16:51:05 - Cliente: Pedido de localização enviado ao Servidor de Localização
+2025-03-09 16:51:05 - Location: Mensagem enviada ao Proxy: Novo cliente querendo conexão, envie localização
+2025-03-09 16:51:05 - Proxy: Localização do Proxy enviada ao cliente 127.0.1.1:5005
+2025-03-09 16:51:05 - Location: Mensagem recebida do Proxy: 127.0.1.1:5005
+2025-03-09 16:51:05 - Location: Localização do Proxy enviada ao cliente: 127.0.1.1:5005
+2025-03-09 16:51:05 - Cliente: Localização do Proxy recebida: 127.0.1.1:5005
+2025-03-09 16:51:05 - Novo cliente conectado ao Proxy 127.0.0.1 : 37490
+2025-03-09 16:51:05 - Location: Conexão com o cliente fechada: 127.0.0.1
+2025-03-09 16:51:05 - Cliente [5001]: Conectado ao Proxy 127.0.1.1:5005
+2025-03-09 16:51:09 - Cliente [5001]: Autenticação falhou
+2025-03-09 16:51:15 - Cliente [5001]: Autenticação bem sucedida
+2025-03-09 16:51:15 - Proxy: Cliente 127.0.0.1 autenticado com sucesso
+2025-03-09 16:51:27 - Cache: Ordem de Serviço não encontrada: 67
+2025-03-09 16:51:27 - Proxy: Ordem de Serviço não encontrada na cache: 67
+2025-03-09 16:51:27 - ServerApp: Buscando Ordem de Serviço: 67
+2025-03-09 16:51:27 - Cache: Ordem de Serviço adicionada: 67
+2025-03-09 16:51:27 - Estado atual da cache: {cod = 1 | OS 0} - , {cod = 2 | OS 1} - , {cod = 3 | OS 2} - , {cod = 4 | OS 3} - , {cod = 5 | OS 4} - , {cod = 6 | OS 5} - , {cod = 7 | OS 6} - , {cod = 8 | OS 7} - , {cod = 9 | OS 8} - , {cod = 10 | OS 9} - , {cod = 11 | OS 10} - , {cod = 12 | OS 11} - , {cod = 13 | OS 12} - , {cod = 14 | OS 13} - , {cod = 15 | OS 14} - , {cod = 16 | OS 15} - , {cod = 17 | OS 16} - , {cod = 18 | OS 17} - , {cod = 19 | OS 18} - , {cod = 20 | OS 19} - , {cod = 21 | OS 20} - , {cod = 22 | OS 21} - , {cod = 23 | OS 22} - , {cod = 24 | OS 23} - , {cod = 25 | OS 24} - , {cod = 26 | OS 25} - , {cod = 27 | OS 26} - , {cod = 28 | OS 27} - , {cod = 29 | OS 28} - , {cod = 30 | OS 29} - , {cod = 67 | OS 66} - 
+2025-03-09 16:51:27 - Proxy: Ordem de serviço buscada no banco de dados
+2025-03-09 16:51:27 - Proxy: Ordem de serviço atualizada 67
+2025-03-09 16:51:27 - ServerApp: Ordem de Serviço atualizada: 67
+2025-03-09 16:51:37 - Proxy: Cache exibido

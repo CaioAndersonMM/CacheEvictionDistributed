@@ -9,7 +9,7 @@ public class CacheFIFO {
     private LinkedList<OrdemServico> cache;
 
     public CacheFIFO() {
-        this.maxSize = 31;
+        this.maxSize = 30;
         this.cache = new LinkedList<>();
     }
 
