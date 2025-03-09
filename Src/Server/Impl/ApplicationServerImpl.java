@@ -99,6 +99,9 @@ public class ApplicationServerImpl {
                         case "buscar":
                             int idBuscar = Integer.parseInt(parametros[0]);
                             OrdemServico osBuscar = database.buscar(idBuscar);
+                            MenuLogger.escreverLog("ServerApp: Buscando Ordem de Serviço: " + idBuscar);
+                            System.out.println("Buscando Ordem de Serviço: " + idBuscar);
+                            System.out.println(osBuscar != null ? osBuscar : "Ordem de serviço não encontrada.");
                             out.writeObject(osBuscar != null ? osBuscar : "Ordem de serviço não encontrada.");
                             break;
                         default:
