@@ -19,7 +19,7 @@ public class CacheFIFO {
                 cache.removeFirst();
             }
             cache.addLast(os);
-            MenuLogger.escreverLog("Ordem de Serviço adicionada à cache: " + os.getNome());
+            MenuLogger.escreverLog("Cache: Ordem de Serviço adicionada: " + os.getCodigo());
             MenuLogger.escreverLog("Estado atual da cache: " + gerarStringCache());
         }
     }
@@ -32,7 +32,7 @@ public class CacheFIFO {
                     return os;
                 }
         }
-        MenuLogger.escreverLog("Ordem de Serviço não encontrada na cache: " + codigo);
+        MenuLogger.escreverLog("Cache: Ordem de Serviço não encontrada: " + codigo);
         return null;
     }
 
