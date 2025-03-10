@@ -78,13 +78,16 @@ public class ApplicationServerImpl {
                             MenuLogger.escreverLog("ServerApp: Ordem de Serviço removida: " + idRemover);
                             break;
                         case "atualizar":
+                            System.out.println("chegou no atualizar");
                             int idEditar = Integer.parseInt(parametros[0]);
                             String novoNome = parametros[1];
                             String novaDescricao = parametros[2];
                             OrdemServico osEditar = database.buscar(idEditar);
+                            System.out.println(osEditar);
                             if (osEditar != null) {
                                 osEditar.setNome(novoNome);
                                 osEditar.setDescricao(novaDescricao);
+                                System.out.println("atualizou:" + osEditar);
                                 out.writeObject("Ordem de serviço atualizada.");
                                 MenuLogger.escreverLog("ServerApp: Ordem de Serviço atualizada: " + idEditar);
                             } else {

@@ -198,8 +198,10 @@ public class ProxyImpl {
                                         outAppServer.flush();
                                         Object resposta3 = inAppServer.readObject();
                                         if (resposta3 instanceof OrdemServico) {
+                                            System.out.println("Ordem de serviço encontrada na base de dados");
                                             osn = (OrdemServico) resposta3;
                                             cache.adicionar(osn);
+                                            System.out.println("Ordem de serviço adicionada ao cache: " + osn);
                                         } else {
                                             System.out.println("Ordem de serviço não encontrada na base de dados");
                                             MenuLogger.escreverLog("Proxy: Ordem de Serviço não encontrada no banco de dados");
@@ -211,6 +213,7 @@ public class ProxyImpl {
                                     }
                                     osn.setNome(novonome);
                                     osn.setDescricao(novadescricao);
+                                    System.out.println("Ordem de serviço atualizada: " + osn);
         
                                     // Enviar a OS atualizada ao servidor de aplicação
                                     outAppServer.writeObject(new Comando("atualizar",
@@ -218,6 +221,12 @@ public class ProxyImpl {
                                     outAppServer.flush();
                                     outCliente.writeObject("Ordem de serviço atualizada com sucesso: " + osn);
                                     outCliente.flush();
+                                    Object resposta3 = inAppServer.readObject();
+                                    if (resposta3 instanceof String) {
+                                        System.out.println("Resposta enviada ao cliente: " + resposta3);
+                                    } else {
+                                        System.out.println("Resposta inesperada do servidor de aplicação: " + resposta3);
+                                    }
                                     MenuLogger.escreverLog("Proxy: Ordem de serviço atualizada " + osn.getCodigo());
                                     break;
                                 case "remover":
