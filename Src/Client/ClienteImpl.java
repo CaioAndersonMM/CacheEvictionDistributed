@@ -149,31 +149,35 @@ public class ClienteImpl {
             System.out.println(MenuLogger.exibirMenu());
             String opcao = sc.nextLine();
 
-            switch (OpcaoMenu.fromValor(opcao)) {
-                case ADICIONAR:
-                    adicionarOrdemServico(out, in, sc);
-                    break;
-                case LISTAR:
-                    listarOrdensServico(out, in);
-                    break;
-                case ALTERAR:
-                    alterarOrdemServico(out, in, sc);
-                    break;
-                case EXCLUIR:
-                    excluirOrdemServico(out, in, sc);
-                    break;
+            try {
+                switch (OpcaoMenu.fromValor(opcao)) {
+                    case ADICIONAR:
+                        adicionarOrdemServico(out, in, sc);
+                        break;
+                    case LISTAR:
+                        listarOrdensServico(out, in);
+                        break;
+                    case ALTERAR:
+                        alterarOrdemServico(out, in, sc);
+                        break;
+                    case EXCLUIR:
+                        excluirOrdemServico(out, in, sc);
+                        break;
                     case EXIBIRCACHE:
-                    exibirCache(out, in);
-                    break;
+                        exibirCache(out, in);
+                        break;
                     case BUSCAR:
-                    buscarOrdemServico(out, in, sc);
-                    break;
-                case SAIR:
-                    enviarComando(out, new Comando("sair"));
-                    MenuLogger.escreverLog("Cliente [" + port + "]: Desconectado do Proxy");
-                    return;
-                default:
-                    System.out.println("Opção inválida");
+                        buscarOrdemServico(out, in, sc);
+                        break;
+                    case SAIR:
+                        enviarComando(out, new Comando("sair"));
+                        MenuLogger.escreverLog("Cliente [" + port + "]: Desconectado do Proxy");
+                        return;
+                    default:
+                        System.out.println("Opção inválida");
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println("Opção inválida. Por favor, tente novamente.");
             }
         }
     }

@@ -17,7 +17,7 @@ public class MenuLogger {
         menu.append("3 - Alterar Ordem de Serviço\n");
         menu.append("4 - Excluir Ordem de Serviço\n");
         menu.append("5 - Exibir Cache\n");
-        menu.append("6 - buscar ordem de serviço\n");
+        menu.append("6 - Buscar Ordem de Serviço\n");
         menu.append("0 - Sair\n");
         return menu.toString();
     }
