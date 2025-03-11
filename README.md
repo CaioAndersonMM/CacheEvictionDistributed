@@ -30,12 +30,17 @@ O cache eviction é o processo de remoção de itens do cache quando ele atinge 
 ## 🔧 Estrutura do Projeto
 
 ```bash
-📂 projeto-cache-eviction
-├── 📂 cliente
-│   ├── cliente     # Implementação do cliente
-│   └── clienteimp  # Implementação do cliente
-├── 📂 servidores
-│   ├── ....
+📂 Src
+├── 📂 Client
+│   ├── Cliente.java
+│   └── Clienteimp.java  # Implementação do cliente
+├── 📂 Database
+│   ├── TabelaHash, Cache, No, Lista e etc.
+├── 📂 Server
+│   ├── 📂 Impl # Implementações
+│   ├── Servidores.java
+├─── log.log
+├─── autenticacao.txt
 ```
 
 ## 📚 Políticas de Cache Eviction
