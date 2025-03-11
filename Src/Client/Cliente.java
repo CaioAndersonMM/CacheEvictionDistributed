@@ -5,10 +5,7 @@ import java.net.UnknownHostException;
 
 public class Cliente {
     public static void main(String[] args) {
-        try {
-            new ClienteImpl(5001, InetAddress.getLocalHost().getHostAddress(), 5000);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
+        String host = "127.0.1.1";
+        new ClienteImpl(5001, host, 5000);
     }
 }
