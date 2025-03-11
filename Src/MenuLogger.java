@@ -24,7 +24,7 @@ public class MenuLogger {
 
     public static void escreverLog(String mensagem) {
         synchronized (MenuLogger.class) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter("Src/log.txt", true))) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("Src/log.log", true))) {
                 String timestamp = LocalDateTime.now().format(formatter);
                 writer.write(timestamp + " - " + mensagem);
                 writer.newLine();
