@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import Src.Logger;
+import Src.MenuLogger;
 import Src.OrdemServico;
 
 public class TabelaHashEncadementoExterior implements Iterable<OrdemServico> {
@@ -33,7 +33,7 @@ public class TabelaHashEncadementoExterior implements Iterable<OrdemServico> {
         this.espacosOcupados++;
 
         if (this.espacosOcupados / (double) this.M > 5.0) {
-            Logger.log("Redimensionando a tabela de " + this.M + " para um novo tamanho.");
+            MenuLogger.escreverLog("Redimensionando a tabela de " + this.M + " para um novo tamanho.");
             ListaAutoAjustavelCF[] tabelaAntiga = this.tabela;
 
             this.M = encontrarPrimoAbaixoProximaPotenciaDe2(this.M * 2);
@@ -49,7 +49,7 @@ public class TabelaHashEncadementoExterior implements Iterable<OrdemServico> {
                     }
                 }
             }
-            Logger.log("Tabela redimensionada para: " + this.M);
+            MenuLogger.escreverLog("Tabela redimensionada para: " + this.M);
         }
     }
 
