@@ -10,7 +10,7 @@ public class LocationServer{
     public static void main(String[] args) throws RemoteException {
 
         try {
-            new LocationServerImpl(5000, InetAddress.getLocalHost().getHostAddress());
+            new LocationServerImpl(5002, InetAddress.getLocalHost().getHostAddress());
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
