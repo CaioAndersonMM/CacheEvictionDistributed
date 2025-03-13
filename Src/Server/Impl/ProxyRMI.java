@@ -1,5 +1,6 @@
 package Src.Server.Impl;
 
+import java.net.UnknownHostException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
@@ -10,5 +11,5 @@ public interface ProxyRMI extends Remote {
     String verificarStatus() throws RemoteException;
     OrdemServico buscar(int codigobusca) throws RemoteException;
     void notificarNovoProxy(String novoProxy) throws RemoteException;
-    Object receberMensagem(Object message) throws RemoteException;
+    Object receberMensagem(Object message) throws RemoteException, UnknownHostException;
 }
