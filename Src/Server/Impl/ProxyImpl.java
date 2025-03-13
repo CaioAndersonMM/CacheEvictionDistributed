@@ -44,22 +44,38 @@ public class ProxyImpl extends UnicastRemoteObject implements ProxyRMI {
     }
 
     private void registrarNoServidorDeLocalizacao() {
-        try {
-            Registry registry = LocateRegistry.getRegistry(5003);
-            LocationServerInterface locationServer = (LocationServerInterface) registry.lookup("LocationServer");
-            locationServer.registerProxy("rmi://localhost:" + (porta + 1) + "/Proxy" + (porta + 1));
-        } catch (NotBoundException e) {
-            System.err.println("LocationServer não encontrado na porta padrão. Tentando na porta especificada...");
+        boolean registrado = false;
+        int tentativas = 0;
+        while (!registrado && tentativas < 3) {
             try {
-                // Se não encontrar na porta padrão, tenta na porta especificada
-                Registry registry = LocateRegistry.getRegistry("localhost", porta + 1);
+                Registry registry = LocateRegistry.getRegistry(5003);
                 LocationServerInterface locationServer = (LocationServerInterface) registry.lookup("LocationServer");
-                locationServer.registerProxy("rmi://localhost:" + (porta + 1) + "/Proxy" + (porta + 1));
-            } catch (Exception ex) {
-                ex.printStackTrace();
+                String novoProxy = "rmi://localhost:" + (porta + 1) + "/Proxy" + (porta + 1);
+                locationServer.registerProxy(novoProxy);
+    
+                // Obter a lista de proxies já registrados
+                List<String> proxiesExistentes = locationServer.getProxies();
+                for (String proxy : proxiesExistentes) {
+                    if (!proxy.equals(novoProxy)) {
+                        notificarNovoProxy(proxy);
+                    }
+                }
+                registrado = true;
+            } catch (Exception e) {
+                System.err.println("Erro ao registrar o proxy no servidor de localização: " + e.getMessage());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            if (!registrado) {
+                tentativas++;
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ie) {
+                    ie.printStackTrace();
+                }
+            }
+        }
+        if (!registrado) {
+            System.err.println("Não foi possível registrar o proxy no servidor de localização após várias tentativas.");
+            System.exit(1);
         }
     }
 
@@ -423,15 +439,17 @@ public class ProxyImpl extends UnicastRemoteObject implements ProxyRMI {
 
     private OrdemServico buscarNaReplicas(int codigobusca) {
         for (ProxyRMI replica : replicas) {
-            try {
-                System.out.println("Buscando na réplica: " + replica.verificarStatus());
-                OrdemServico os = replica.buscar(codigobusca);
-                if (os != null) {
-                    System.out.println("Ordem de serviço encontrada na réplica: " + os.getCodigo());
-                    return os;
+            if (replica != this) {
+                try {
+                    System.out.println("Buscando na réplica: " + replica.verificarStatus());
+                    OrdemServico os = replica.buscar(codigobusca);
+                    if (os != null) {
+                        System.out.println("Ordem de serviço encontrada na réplica: " + os.getCodigo());
+                        return os;
+                    }
+                } catch (RemoteException e) {
+                    System.out.println("Erro ao consultar réplica: " + e.getMessage());
                 }
-            } catch (RemoteException e) {
-                System.out.println("Erro ao consultar réplica: " + e.getMessage());
             }
         }
         return null;
@@ -466,7 +484,7 @@ public class ProxyImpl extends UnicastRemoteObject implements ProxyRMI {
             System.out.println("Ordem de serviço encontrada na cache: " + os.getCodigo());
             return os;
         }
-        System.out.println("Ordem de serviço não encontrada na cache.");
+        System.out.println("Ordem de serviço não encontrada na minha cache.");
         return null;
     }
 
