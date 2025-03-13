@@ -92,31 +92,33 @@ public class LocationServerImpl extends UnicastRemoteObject implements LocationS
         @Override
         public void run() {
             try (ObjectOutputStream outCliente = new ObjectOutputStream(cliente.getOutputStream());
-                 ObjectInputStream inCliente = new ObjectInputStream(cliente.getInputStream())) {
+                ObjectInputStream inCliente = new ObjectInputStream(cliente.getInputStream())) {
 
-                if (!proxies.isEmpty()) {
-                    Random random = new Random();
-                    String proxyName = proxies.get(random.nextInt(proxies.size()));
-                    ProxyRMI proxyRMI = (ProxyRMI) Naming.lookup(proxyName);
-
-                    proxyRMI.receberMensagem("Novo cliente querendo conexão, envie localização");
-                    Object resposta = (Object) proxyRMI.receberMensagem("Novo cliente querendo conexão, envie localização");
-                    System.out.println("Localização recebida do Proxy: " + resposta);
-                    
-                    if (resposta instanceof String) {
-                        String[] localizacao = ((String) resposta).split(":");
-                        String host = localizacao[0];
-                        int porta = Integer.parseInt(localizacao[1]);
-
+                String mensagem = (String) inCliente.readObject();
+                System.out.println("Mensagem recebida do cliente: " + mensagem);
+                if (mensagem.equals("Novo cliente querendo conexão, envie localização")) {
+                    if (!proxies.isEmpty()) {
+                        Random random = new Random();
+                        String proxyName = proxies.get(random.nextInt(proxies.size()));
+                        ProxyRMI proxyRMI = (ProxyRMI) Naming.lookup(proxyName);
+    
+                        proxyRMI.receberMensagem("Novo cliente querendo conexão, envie localização");
+                        String resposta = proxyRMI.receberMensagem("Novo cliente querendo conexão, envie localização");
+                        System.out.println("Localização recebida do Proxy: " + resposta);
+    
                         // Envia localização do Proxy para o cliente
-                        outCliente.writeObject(host + ":" + porta);
-                        MenuLogger.escreverLog("Location: Localização do Proxy enviada ao cliente: " + host + ":" + porta);
+                        outCliente.writeObject(resposta);
+                        outCliente.flush();
+                        System.out.println("Localização do Proxy enviada ao cliente: " + resposta);
+                        MenuLogger.escreverLog("Location: Localização do Proxy enviada ao cliente: " + resposta);
+                    } else {
+                        System.out.println("Nenhum proxy registrado para enviar a mensagem.");
                     }
                 } else {
-                    System.out.println("Nenhum proxy registrado para enviar a mensagem.");
+                    System.out.println("Mensagem inesperada recebida do cliente: " + mensagem);
                 }
-
-            } catch (IOException | NotBoundException e) {
+    
+            } catch (IOException | ClassNotFoundException | NotBoundException e) {
                 e.printStackTrace();
             } finally {
                 try {
