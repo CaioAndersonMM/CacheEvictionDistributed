@@ -46,7 +46,7 @@ public class ClienteImpl {
 
             outLocation.writeObject("Novo cliente querendo conexão, envie localização");
             outLocation.flush();
-            outLocation.reset();    
+            // outLocation.reset();    
             System.out.println("Pedido de localização enviado");
             MenuLogger.escreverLog("Cliente: Pedido de localização enviado ao Servidor de Localização");
 

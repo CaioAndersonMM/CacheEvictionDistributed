@@ -474,7 +474,7 @@ public class ProxyImpl extends UnicastRemoteObject implements ProxyRMI {
 
     @Override
     public String verificarStatus() throws RemoteException {
-        return "Proxy ativo na porta " + porta;
+        return "Proxy ativo na porta " + (porta+1);
     }
 
     @Override
