@@ -93,13 +93,13 @@ public class ProxyImpl extends UnicastRemoteObject implements ProxyRMI {
     }
 
     @Override
-    public Object receberMensagem(Object message) throws RemoteException, UnknownHostException {
+    public String receberMensagem(Object message) throws RemoteException, UnknownHostException {
         System.out.println("Mensagem recebida do servidor de localização: " + message);
         if (message instanceof String && message.equals("Novo cliente querendo conexão, envie localização")) {
             String host = InetAddress.getLocalHost().getHostAddress();
             return host + ":" + porta;
         }
-        return message;
+        return message.toString();
     }
 
     private void conectarAplicacao() {
