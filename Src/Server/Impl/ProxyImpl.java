@@ -84,7 +84,7 @@ public class ProxyImpl extends UnicastRemoteObject implements ProxyRMI {
     public void notificarNovoProxy(String novoProxy) throws RemoteException {
         try {
             ProxyRMI proxyRMI = (ProxyRMI) Naming.lookup(novoProxy);
-            replicas.add((ProxyImpl) proxyRMI);
+            replicas.add(proxyRMI);
             System.out.println("Novo proxy adicionado: " + novoProxy);
         } catch (Exception e) {
             System.err.println("Erro ao adicionar novo proxy: " + novoProxy);
