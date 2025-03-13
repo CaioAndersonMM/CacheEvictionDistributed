@@ -62,7 +62,7 @@ public class LocationServerImpl extends UnicastRemoteObject implements LocationS
         try {
             Registry registry = LocateRegistry.createRegistry(porta + 1);
             registry.rebind("LocationServer", this);
-            System.out.println("Servidor de Localização registrado na porta " + porta);
+            System.out.println("Servidor de Localização registrado na porta " + (porta + 1));
 
             serverLocation = new ServerSocket(porta, 50, InetAddress.getByName(host));
             System.out.println("Servidor de Localização rodando " + serverLocation.getInetAddress().getHostAddress()
