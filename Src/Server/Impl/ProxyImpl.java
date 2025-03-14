@@ -6,7 +6,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.rmi.Naming;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -298,6 +297,7 @@ public class ProxyImpl extends UnicastRemoteObject implements ProxyRMI {
                                         break;
                                     }
                                     MenuLogger.escreverLog("Proxy: Ordem de serviço buscada no banco de dados");
+                                    sincronizarCaches("atualizar", osn);
                                 }
                                 osn.setNome(novonome);
                                 osn.setDescricao(novadescricao);
@@ -324,7 +324,6 @@ public class ProxyImpl extends UnicastRemoteObject implements ProxyRMI {
                                 if (res) {
                                     System.out.println("Ordem de serviço removida com sucesso da cache");
                                     MenuLogger.escreverLog("Proxy: Ordem de serviço removida da cache: " + cod);
-                                    // sincronizarCaches(); // Sincroniza com as réplicas
                                 } else {
                                     System.out.println("Ordem de serviço não encontrada na cache");
                                 }
@@ -349,6 +348,8 @@ public class ProxyImpl extends UnicastRemoteObject implements ProxyRMI {
                                     outCliente.writeObject("Erro ao remover ordem de serviço.");
                                     outCliente.flush();
                                 }
+
+                                sincronizarCaches("remover", new OrdemServico(cod, "", ""));
                                 break;
                             case "listarCache":
                                 String listaCache = cache.listarCache();
@@ -455,22 +456,38 @@ public class ProxyImpl extends UnicastRemoteObject implements ProxyRMI {
         return null;
     }
 
-    public static void sincronizarCaches() {
+    public static synchronized void sincronizarCaches(String operacao, OrdemServico os) {
         for (ProxyRMI replica : replicas) {
             try {
                 System.out.println("Sincronizando cache com a réplica...");
-                replica.sincronizarCache("dados do cache");
+                replica.sincronizarCache(operacao, os);
             } catch (RemoteException e) {
                 System.out.println("Erro ao sincronizar com a réplica: " + e.getMessage());
             }
         }
     }
-
+    
     @Override
-    public String sincronizarCache(String dados) throws RemoteException {
-        System.out.println("Sincronizando cache com dados: " + dados);
-        return "Cache sincronizada com sucesso!";
+    public synchronized void sincronizarCache(String operacao, OrdemServico os) throws RemoteException {
+        System.out.println("Sincronizando cache com operação: " + operacao + " e dados: " + os);
+        switch (operacao) {
+            case "atualizar":
+                OrdemServico osb = cache.buscar(os.getCodigo());
+                if (osb != null) {
+                    osb.setNome(os.getNome());
+                    osb.setDescricao(os.getDescricao());
+                    System.out.println("Ordem de serviço atualizada na cache: " + osb.getCodigo());
+                }
+                break;
+            case "remover":
+                cache.remover(os.getCodigo());
+                break;
+            default:
+                System.out.println("Operação desconhecida para sincronização: " + operacao);
+                break;
+        }
     }
+    
 
     @Override
     public String verificarStatus() throws RemoteException {
