@@ -49,30 +49,33 @@ public class ApplicationServerImpl {
         }
     }
 
-     private void backup(String comando, OrdemServico os) {
+    private synchronized void backup(String comando, OrdemServico os) {
         try {
             boolean sucesso = backupServer.backupDatabase(comando, os);
             if (!sucesso) {
                 System.out.println("Erro ao fazer backup do comando: " + comando);
             }
 
-            //String logContent = MenuLogger.lerLog();
-            //backupServer.backupLog(logContent);
+            // String logContent = MenuLogger.lerLog();
+            // backupServer.backupLog(logContent);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
 
-
     public void rodar() {
         try (ServerSocket server = new ServerSocket(porta, 50, InetAddress.getByName(enderecoip))) {
-            System.out.println("Servidor de Aplicação rodando " + server.getInetAddress().getHostAddress() + " : " + server.getLocalPort());
-            MenuLogger.escreverLog("Servidor de Aplicação rodando " + server.getInetAddress().getHostAddress() + " : " + server.getLocalPort());
+            System.out.println("Servidor de Aplicação rodando " + server.getInetAddress().getHostAddress() + " : "
+                    + server.getLocalPort());
+            MenuLogger.escreverLog("Servidor de Aplicação rodando " + server.getInetAddress().getHostAddress() + " : "
+                    + server.getLocalPort());
 
             while (true) {
                 Socket cliente = server.accept();
-                System.out.println("Cliente conectado: " + cliente.getInetAddress().getHostAddress() + ":" + cliente.getPort());
-                MenuLogger.escreverLog("Novo cliente conectado ao Servidor de Aplicação: " + cliente.getInetAddress().getHostAddress() + ":" + cliente.getPort());
+                System.out.println(
+                        "Cliente conectado: " + cliente.getInetAddress().getHostAddress() + ":" + cliente.getPort());
+                MenuLogger.escreverLog("Novo cliente conectado ao Servidor de Aplicação: "
+                        + cliente.getInetAddress().getHostAddress() + ":" + cliente.getPort());
                 new Thread(new ClienteThread(cliente)).start();
             }
 
@@ -114,7 +117,8 @@ public class ApplicationServerImpl {
                         case "remover":
                             int idRemover = Integer.parseInt(parametros[0]);
                             boolean removido = database.remover(idRemover);
-                            out.writeObject(removido ? "Ordem de serviço removida com sucesso." : "Ordem de serviço não encontrada.");
+                            out.writeObject(removido ? "Ordem de serviço removida com sucesso."
+                                    : "Ordem de serviço não encontrada.");
                             MenuLogger.escreverLog("ServerApp: Ordem de Serviço removida: " + idRemover);
                             backup("remover", new OrdemServico(idRemover, "", ""));
                             break;
