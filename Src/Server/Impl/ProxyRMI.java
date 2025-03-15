@@ -12,4 +12,5 @@ public interface ProxyRMI extends Remote {
     void notificarNovoProxy(String novoProxy) throws RemoteException;
     String receberMensagem(Object message) throws RemoteException, UnknownHostException;
     void sincronizarCache(String operacao, OrdemServico os) throws RemoteException;
+    void removerProxy(String proxyName) throws RemoteException;
 }

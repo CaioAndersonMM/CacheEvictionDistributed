@@ -94,6 +94,23 @@ public class ProxyImpl extends UnicastRemoteObject implements ProxyRMI {
             e.printStackTrace();
         }
     }
+    @Override
+    public void removerProxy(String proxyName) throws RemoteException {
+        List<ProxyRMI> proxiesInativas = new ArrayList<>();
+        for (ProxyRMI proxy : replicas) {
+            try {
+                proxy.verificarStatus();
+            } catch (RemoteException e) {
+                System.err.println("Proxy inativa detectada: " + proxy);
+                proxiesInativas.add(proxy);
+            }
+        }
+        for (ProxyRMI proxyInativa : proxiesInativas) {
+            replicas.remove(proxyInativa);
+            System.out.println("Proxy removida: " + proxyInativa);
+            MenuLogger.escreverLog("Proxy removida: " + proxyInativa);
+        }
+    }
 
     @Override
     public void notificarNovoProxy(String novoProxy) throws RemoteException {
@@ -491,7 +508,7 @@ public class ProxyImpl extends UnicastRemoteObject implements ProxyRMI {
 
     @Override
     public String verificarStatus() throws RemoteException {
-        return "Proxy ativo na porta " + (porta+1);
+        return "Proxy verificado e ativo na porta " + (porta+1);
     }
 
     @Override
