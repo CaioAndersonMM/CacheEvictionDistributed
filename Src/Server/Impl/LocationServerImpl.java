@@ -37,7 +37,7 @@ public class LocationServerImpl extends UnicastRemoteObject implements LocationS
             proxies.add(proxyName);
             System.out.println("Proxy registrado: " + proxyName);
             MenuLogger.escreverLog("Proxy registrado: " + proxyName);
-            notificarProxies(proxyName);
+            notificarProxies(proxyName, true);
         }
     }
 
@@ -46,15 +46,39 @@ public class LocationServerImpl extends UnicastRemoteObject implements LocationS
         return new ArrayList<>(proxies);
     }
 
-    private void notificarProxies(String novoProxy) {
+    private void notificarProxies(String proxyName, boolean adicionar) {
+        List<String> proxiesInativas = new ArrayList<>();
         for (String proxy : proxies) {
-            try {
-                ProxyRMI proxyRMI = (ProxyRMI) Naming.lookup(proxy);
-                proxyRMI.notificarNovoProxy(novoProxy);
-            } catch (Exception e) {
-                System.err.println("Erro ao notificar proxy: " + proxy);
-                e.printStackTrace();
+            if (!proxy.equals(proxyName)) { // Evita notificar a proxy de sua própria remoção
+                try {
+                    ProxyRMI proxyRMI = (ProxyRMI) Naming.lookup(proxy);
+                    if (adicionar) {
+                        proxyRMI.notificarNovoProxy(proxyName);
+                    } else {
+                        proxyRMI.removerProxy(proxyName);
+                    }
+                } catch (Exception e) {
+                    System.err.println("Erro ao notificar proxy: " + proxy);
+                    e.printStackTrace();
+                    proxiesInativas.add(proxy);
+                }
             }
+        }
+        for (String proxyInativa : proxiesInativas) {
+            proxies.remove(proxyInativa);
+            System.out.println("Proxy removida da lista");
+            MenuLogger.escreverLog("Proxy iantiva removida! ");
+        }
+    }
+
+    private boolean verificarProxyAtiva(String proxyName) {
+        try {
+            ProxyRMI proxyRMI = (ProxyRMI) Naming.lookup(proxyName);
+            proxyRMI.verificarStatus();
+            return true;
+        } catch (Exception e) {
+            System.err.println("Proxy inativa: " + proxyName);
+            return false;
         }
     }
 
@@ -97,22 +121,36 @@ public class LocationServerImpl extends UnicastRemoteObject implements LocationS
                 String mensagem = (String) inCliente.readObject();
                 System.out.println("Mensagem recebida do cliente: " + mensagem);
                 if (mensagem.equals("Novo cliente querendo conexão, envie localização")) {
-                    if (!proxies.isEmpty()) {
-                        Random random = new Random();
-                        String proxyName = proxies.get(random.nextInt(proxies.size()));
-                        ProxyRMI proxyRMI = (ProxyRMI) Naming.lookup(proxyName);
+                    boolean proxyEncontrada = false;
+                    Random random = new Random();
+                    List<String> proxiesAtivas = new ArrayList<>(proxies);
+                    while (!proxyEncontrada && !proxiesAtivas.isEmpty()) {
+                        int index = random.nextInt(proxiesAtivas.size());
+                        String proxyName = proxiesAtivas.get(index);
     
-                        proxyRMI.receberMensagem("Novo cliente querendo conexão, envie localização");
-                        String resposta = proxyRMI.receberMensagem("Novo cliente querendo conexão, envie localização");
-                        System.out.println("Localização recebida do Proxy: " + resposta);
+                        if (verificarProxyAtiva(proxyName)) {
+                            ProxyRMI proxyRMI = (ProxyRMI) Naming.lookup(proxyName);
+                            String resposta = proxyRMI.receberMensagem("Novo cliente querendo conexão, envie localização");
+                            System.out.println("Localização recebida do Proxy: " + resposta);
     
-                        // Envia localização do Proxy para o cliente
-                        outCliente.writeObject(resposta);
+                            // Envia localização do Proxy para o cliente
+                            outCliente.writeObject(resposta);
+                            outCliente.flush();
+                            System.out.println("Localização do Proxy enviada ao cliente: " + resposta);
+                            MenuLogger.escreverLog("Location: Localização do Proxy enviada ao cliente: " + resposta);
+                            proxyEncontrada = true;
+                        } else {
+                            System.out.println("Proxy escolhida está inativa: " + proxyName);
+                            MenuLogger.escreverLog("OPS! Uma Proxy ficou inativa! " + proxyName);
+                            proxiesAtivas.remove(proxyName);
+                            proxies.remove(proxyName);
+                            notificarProxies(proxyName, false);
+                        }
+                    }
+    
+                    if (!proxyEncontrada) {
+                        outCliente.writeObject("Nenhum proxy disponível no momento.");
                         outCliente.flush();
-                        System.out.println("Localização do Proxy enviada ao cliente: " + resposta);
-                        MenuLogger.escreverLog("Location: Localização do Proxy enviada ao cliente: " + resposta);
-                    } else {
-                        System.out.println("Nenhum proxy registrado para enviar a mensagem.");
                     }
                 } else {
                     System.out.println("Mensagem inesperada recebida do cliente: " + mensagem);
