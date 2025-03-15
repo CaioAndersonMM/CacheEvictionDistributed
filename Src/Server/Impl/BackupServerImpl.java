@@ -34,7 +34,7 @@ public class BackupServerImpl extends UnicastRemoteObject implements BackupServe
                         database.adicionar(os);
                         MenuLogger.escreverLog("Ordem de serviço inserida no backup: " + os.getCodigo());
                         // Assuming listarDatabase() should return a String representation of the database
-                        System.out.println(database.toString());
+                        System.out.println(database.gerarStringDatabase());
                         return true;
                     } else if (comandoString.equals("atualizar")) {
                         OrdemServico osn = database.buscar(os.getCodigo());

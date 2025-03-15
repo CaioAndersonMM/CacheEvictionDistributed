@@ -25,8 +25,8 @@ public class ApplicationServerImpl {
         this.enderecoip = enderecoip;
         this.nextId = 1;
         this.database = new DatabaseOs();
-        inicializarOrdemServico();
         conectarBackupServer();
+        inicializarOrdemServico();
         rodar();
     }
 
@@ -172,8 +172,18 @@ public class ApplicationServerImpl {
     }
 
     public void inicializarOrdemServico() {
-        for (int i = 0; i < 100; i++) {
-            database.adicionar(new OrdemServico(nextId++, "OS " + i, "Descrição " + i));
-        }
+     
+            try {
+                for (int i = 0; i < 100; i++) {
+                    OrdemServico os= new OrdemServico(nextId++, "OS " + i, "Descrição " + i);
+                    database.adicionar(os);
+                    backupServer.backupDatabase("inserir", os);
+                }
+                
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            };
+        
     }
 }
