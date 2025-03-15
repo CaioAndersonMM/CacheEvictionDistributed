@@ -8,13 +8,14 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
+import Src.MenuLogger;
 import Src.OrdemServico;
 import Src.Database.DatabaseOs;
 
 public class BackupServerImpl extends UnicastRemoteObject implements BackupServerInterface {
     private DatabaseOs database;
     
-    protected BackupServerImpl() throws RemoteException {
+    public BackupServerImpl() throws RemoteException {
         super();
         this.database = new DatabaseOs();
     }
@@ -31,15 +32,20 @@ public class BackupServerImpl extends UnicastRemoteObject implements BackupServe
                     String comandoString = (String) comando;
                     if (comandoString.equals("inserir")) {
                         database.adicionar(os);
+                        MenuLogger.escreverLog("Ordem de serviço inserida no backup: " + os.getCodigo());
+                        // Assuming listarDatabase() should return a String representation of the database
+                        System.out.println(database.toString());
                         return true;
                     } else if (comandoString.equals("atualizar")) {
                         OrdemServico osn = database.buscar(os.getCodigo());
                         osn.setNome(os.getNome());
                         osn.setDescricao(os.getDescricao());
                         osn.setHoraSolicitacao(os.getHoraSolicitacao());
+                        MenuLogger.escreverLog("Ordem de serviço atualizada no backup: " + os.getCodigo());
                         return true;
                     } else if (comandoString.equals("remover")) {
                         database.remover(os.getCodigo());
+                        MenuLogger.escreverLog("Ordem de serviço removida no backup: " + os.getCodigo());
                         return true;
                     } else {
                         // Comando inválido
@@ -62,18 +68,6 @@ public class BackupServerImpl extends UnicastRemoteObject implements BackupServe
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("backup_log.txt"))) {
             writer.write(logContent);
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void main(String[] args) {
-        try {
-            // Não precisou de um ServerSocket
-            BackupServerImpl backupServer = new BackupServerImpl();
-            Registry registry = LocateRegistry.createRegistry(6055);
-            registry.rebind("BackupServer", backupServer);
-            System.out.println("Servidor de Backup rodando...");
-        } catch (RemoteException e) {
             e.printStackTrace();
         }
     }

@@ -120,13 +120,6 @@ public class LocationServerImpl extends UnicastRemoteObject implements LocationS
     
             } catch (IOException | ClassNotFoundException | NotBoundException e) {
                 e.printStackTrace();
-            } finally {
-                try {
-                    cliente.close();
-                    MenuLogger.escreverLog("Location: Conexão com o cliente fechada: " + cliente.getInetAddress().getHostAddress());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
         }
     }
