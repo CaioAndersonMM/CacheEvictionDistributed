@@ -67,7 +67,7 @@ public class BackupServerImpl extends UnicastRemoteObject implements BackupServe
     }
 
     public static void backupLog(String logContent) throws RemoteException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("backup_log.txt", true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Src/backup_log.log", true))) {
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             synchronized (MenuLogger.class) {
                 writer.write(timestamp + " - " + logContent);

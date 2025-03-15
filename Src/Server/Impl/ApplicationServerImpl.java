@@ -55,9 +55,6 @@ public class ApplicationServerImpl {
             if (!sucesso) {
                 System.out.println("Erro ao fazer backup do comando: " + comando);
             }
-
-            // String logContent = MenuLogger.lerLog();
-            // backupServer.backupLog(logContent);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
