@@ -11,6 +11,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import Src.OrdemServico;
@@ -94,6 +95,7 @@ public class ProxyImpl extends UnicastRemoteObject implements ProxyRMI {
             e.printStackTrace();
         }
     }
+    
     @Override
     public void removerProxy(String proxyName) throws RemoteException {
         List<ProxyRMI> proxiesInativas = new ArrayList<>();
@@ -120,7 +122,16 @@ public class ProxyImpl extends UnicastRemoteObject implements ProxyRMI {
             System.out.println("Novo proxy adicionado: " + novoProxy);
         } catch (Exception e) {
             System.err.println("Erro ao adicionar novo proxy: " + novoProxy);
-            e.printStackTrace();
+            // Remover proxy do servidor de localização
+            try {
+                Registry registry = LocateRegistry.getRegistry(5003);
+                LocationServerInterface locationServer = (LocationServerInterface) registry.lookup("LocationServer");
+                locationServer.removerProxy(novoProxy);
+                System.out.println("Proxy removido do servidor de localização: " + novoProxy);
+            } catch (Exception ex) {
+                System.err.println("Erro ao remover proxy do servidor de localização: " + ex.getMessage());
+                ex.printStackTrace();
+            }
         }
     }
 
@@ -456,7 +467,9 @@ public class ProxyImpl extends UnicastRemoteObject implements ProxyRMI {
     }
 
     private OrdemServico buscarNaReplicas(int codigobusca) {
-        for (ProxyRMI replica : replicas) {
+        Iterator<ProxyRMI> iterator = replicas.iterator();
+        while (iterator.hasNext()) {
+            ProxyRMI replica = iterator.next();
             if (replica != this) {
                 try {
                     System.out.println("Buscando na réplica: " + replica.verificarStatus());
@@ -466,13 +479,25 @@ public class ProxyImpl extends UnicastRemoteObject implements ProxyRMI {
                         return os;
                     }
                 } catch (RemoteException e) {
-                    System.out.println("Erro ao consultar réplica: " + e.getMessage());
+                    System.out.println("Erro ao consultar réplica");
+                    iterator.remove();
+                    System.out.println("Réplica removida");
+    
+                    // Remover proxy do servidor de localização
+                    try {
+                        Registry registry = LocateRegistry.getRegistry(5003);
+                        LocationServerInterface locationServer = (LocationServerInterface) registry.lookup("LocationServer");
+                        locationServer.removerProxy(replica.toString());
+                        System.out.println("Proxy removida do servidor de localização");
+                    } catch (Exception ex) {
+                        System.err.println("Erro ao remover proxy do servidor de localização: " + ex.getMessage());
+                        ex.printStackTrace();
+                    }
                 }
             }
         }
         return null;
     }
-
     public static synchronized void sincronizarCaches(String operacao, OrdemServico os) {
         for (ProxyRMI replica : replicas) {
             try {
