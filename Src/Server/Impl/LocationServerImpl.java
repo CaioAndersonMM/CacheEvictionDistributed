@@ -42,6 +42,17 @@ public class LocationServerImpl extends UnicastRemoteObject implements LocationS
     }
 
     @Override
+    public synchronized void removerProxy(String proxyName) throws RemoteException {
+        if (proxies.remove(proxyName)) {
+            System.out.println("Proxy removida: " + proxyName);
+            MenuLogger.escreverLog("Proxy removida: " + proxyName);
+            notificarProxies(proxyName, false);
+        } else {
+            System.out.println("Proxy não encontrada: " + proxyName);
+        }
+    }
+
+    @Override
     public synchronized List<String> getProxies() throws RemoteException {
         return new ArrayList<>(proxies);
     }
@@ -56,6 +67,7 @@ public class LocationServerImpl extends UnicastRemoteObject implements LocationS
                         proxyRMI.notificarNovoProxy(proxyName);
                     } else {
                         proxyRMI.removerProxy(proxyName);
+                        System.out.println("Proxy removida da lista");
                     }
                 } catch (Exception e) {
                     System.err.println("Erro ao notificar proxy: " + proxy);
@@ -67,7 +79,7 @@ public class LocationServerImpl extends UnicastRemoteObject implements LocationS
         for (String proxyInativa : proxiesInativas) {
             proxies.remove(proxyInativa);
             System.out.println("Proxy removida da lista");
-            MenuLogger.escreverLog("Proxy iantiva removida! ");
+            MenuLogger.escreverLog("Proxy inativa removida! ");
         }
     }
 

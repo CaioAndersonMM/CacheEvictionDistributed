@@ -7,4 +7,5 @@ import java.util.List;
 public interface LocationServerInterface extends Remote {
     void registerProxy(String proxyName) throws RemoteException;
     List<String> getProxies() throws RemoteException;
+    void removerProxy(String proxyName) throws RemoteException;
 }
