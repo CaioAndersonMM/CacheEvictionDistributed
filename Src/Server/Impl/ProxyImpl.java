@@ -319,6 +319,7 @@ public class ProxyImpl extends UnicastRemoteObject implements ProxyRMI {
                                                 "Proxy: Ordem de Serviço não encontrada no banco de dados");
                                         outCliente.writeObject("Ordem de serviço não encontrada!");
                                         outCliente.flush();
+                                        sincronizarCaches("atualizar", osn);
                                         break;
                                     }
                                     MenuLogger.escreverLog("Proxy: Ordem de serviço buscada no banco de dados");
