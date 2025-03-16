@@ -267,9 +267,6 @@ public class ProxyImpl extends UnicastRemoteObject implements ProxyRMI {
                                 if (resposta instanceof OrdemServico) {
                                     cache.adicionar((OrdemServico) resposta);
                                     System.out.println("Ordem de Serviço adicionada ao cache: " + resposta);
-
-                                    // sincronizarCaches(); // Sincroniza com as réplicas
-
                                     outCliente.writeObject(resposta);
                                     outCliente.flush();
                                 } else {
@@ -325,7 +322,6 @@ public class ProxyImpl extends UnicastRemoteObject implements ProxyRMI {
                                         break;
                                     }
                                     MenuLogger.escreverLog("Proxy: Ordem de serviço buscada no banco de dados");
-                                    sincronizarCaches("atualizar", osn);
                                 }
                                 osn.setNome(novonome);
                                 osn.setDescricao(novadescricao);
@@ -345,6 +341,7 @@ public class ProxyImpl extends UnicastRemoteObject implements ProxyRMI {
                                             .println("Resposta inesperada do servidor de aplicação: " + resposta3);
                                 }
                                 MenuLogger.escreverLog("Proxy: Ordem de serviço atualizada " + osn.getCodigo());
+                                sincronizarCaches("atualizar", osn);
                                 break;
                             case "remover":
                                 int cod = Integer.parseInt(partes[0]);
