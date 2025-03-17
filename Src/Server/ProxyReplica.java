@@ -1,16 +1,13 @@
 package Src.Server;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
+import Src.Server.Impl.ProxyImpl;
 
-import Src.Server.Impl.LocationServerImpl;
-
-public class LocationServer{
+public class ProxyReplica {
     public static void main(String[] args) throws RemoteException {
-
         try {
-            new LocationServerImpl(5002, InetAddress.getLocalHost().getHostAddress());
+            new ProxyImpl(5015, InetAddress.getLocalHost().getHostAddress(), 5055);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }

@@ -6,99 +6,116 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 import Src.MenuLogger;
 
-public class LocationServerImpl {
-    private String proxyHost;
-    private int porta, proxyPort;
-    private Socket socketProxy;
+public class LocationServerImpl extends UnicastRemoteObject implements LocationServerInterface {
+    private int porta;
+    private String host;
     private ServerSocket serverLocation;
-    private ObjectOutputStream out;
-    private ObjectInputStream in;
-    private boolean proxyAtivo;
+    private List<String> proxies;
 
-    public LocationServerImpl(int porta, String proxyHost, int proxyPort) {
+    public LocationServerImpl(int porta, String host) throws RemoteException {
         this.porta = porta;
-        this.proxyHost = proxyHost;
-        this.proxyPort = proxyPort;
+        this.host = host;
+        this.proxies = new ArrayList<>();
         rodar();
+    }
+
+    @Override
+    public synchronized void registerProxy(String proxyName) throws RemoteException {
+        if (!proxies.contains(proxyName)) {
+            proxies.add(proxyName);
+            System.out.println("Proxy registrado: " + proxyName);
+            MenuLogger.escreverLog("Proxy registrado: " + proxyName);
+            notificarProxies(proxyName, true);
+        }
+    }
+
+    @Override
+    public synchronized void removerProxy(String proxyName) throws RemoteException {
+        if (proxies.remove(proxyName)) {
+            System.out.println("Proxy removida: " + proxyName);
+            MenuLogger.escreverLog("Proxy removida: " + proxyName);
+            notificarProxies(proxyName, false);
+        } else {
+            System.out.println("Proxy não encontrada: " + proxyName);
+        }
+    }
+
+    @Override
+    public synchronized List<String> getProxies() throws RemoteException {
+        return new ArrayList<>(proxies);
+    }
+
+    private void notificarProxies(String proxyName, boolean adicionar) {
+        List<String> proxiesInativas = new ArrayList<>();
+        for (String proxy : proxies) {
+            if (!proxy.equals(proxyName)) { // Evita notificar a proxy de sua própria remoção
+                try {
+                    ProxyRMI proxyRMI = (ProxyRMI) Naming.lookup(proxy);
+                    if (adicionar) {
+                        proxyRMI.notificarNovoProxy(proxyName);
+                    } else {
+                        proxyRMI.removerProxy(proxyName);
+                        System.out.println("Proxy removida da lista");
+                    }
+                } catch (Exception e) {
+                    System.err.println("Erro ao notificar proxy: " + proxy);
+                    e.printStackTrace();
+                    proxiesInativas.add(proxy);
+                }
+            }
+        }
+        for (String proxyInativa : proxiesInativas) {
+            proxies.remove(proxyInativa);
+            System.out.println("Proxy removida da lista");
+            MenuLogger.escreverLog("Proxy inativa removida! ");
+        }
+    }
+
+    private boolean verificarProxyAtiva(String proxyName) {
+        try {
+            ProxyRMI proxyRMI = (ProxyRMI) Naming.lookup(proxyName);
+            proxyRMI.verificarStatus();
+            return true;
+        } catch (Exception e) {
+            System.err.println("Proxy inativa: " + proxyName);
+            return false;
+        }
     }
 
     public void rodar() {
         try {
-            String localHostAddress = InetAddress.getLocalHost().getHostAddress();
-            serverLocation = new ServerSocket(porta, 50, InetAddress.getByName(localHostAddress));
-            System.out.println("Servidor de Localização rodando " + serverLocation.getInetAddress().getHostAddress() + ":" + porta);
-            MenuLogger.escreverLog("Servidor de Localização rodando " + serverLocation.getInetAddress().getHostAddress() + ":" + porta);
+            Registry registry = LocateRegistry.createRegistry(porta + 1);
+            registry.rebind("LocationServer", this);
+            System.out.println("Servidor de Localização registrado na porta " + (porta + 1));
 
-            while (socketProxy == null) {
-                try {
-                    System.out.println("Tentando conectar ao Proxy " + proxyHost + ":" + proxyPort);
-                    socketProxy = new Socket(proxyHost, proxyPort);
-                    out = new ObjectOutputStream(socketProxy.getOutputStream());
-                    in = new ObjectInputStream(socketProxy.getInputStream());
+            serverLocation = new ServerSocket(porta, 50, InetAddress.getByName(host));
+            System.out.println("Servidor de Localização rodando " + serverLocation.getInetAddress().getHostAddress()
+                    + ":" + porta);
+            MenuLogger.escreverLog("Servidor de Localização rodando " + serverLocation.getInetAddress().getHostAddress()
+                    + ":" + porta);
 
-                    Object resposta = in.readObject();
-                    if (resposta instanceof String && resposta.equals("Conexão estabelecida com o Proxy")) {
-                        System.out.println("Servidor de Localização conectado ao Proxy - esperando clientes");
-                        MenuLogger.escreverLog("Servidor de Localização conectado ao Proxy - esperando clientes");
-                        proxyAtivo = true;
-                    }
-                } catch (IOException | ClassNotFoundException e) {
-                    System.out.println("Proxy não disponível, tentando novamente...");
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ie) {
-                        ie.printStackTrace();
-                    }
-                }
-            }
-
-            while (proxyAtivo) {
+            while (true) {
                 Socket cliente = serverLocation.accept();
                 System.out.println("Cliente conectado: " + cliente.getInetAddress().getHostAddress());
                 MenuLogger.escreverLog("Cliente conectado ao Servidor de Localização: " + cliente.getInetAddress().getHostAddress());
-
-                // Multiplos clientes
                 new Thread(new ClienteThread(cliente)).start();
             }
 
-            fecharConexaoProxy();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        System.out.println("Servidor de localização conectado ao Proxy " + proxyHost + ":" + proxyPort);
-        MenuLogger.escreverLog("Servidor de localização conectado ao Proxy " + proxyHost + ":" + proxyPort);
-    }
-
-    public void enviarMensagemAoProxy(Object message) {
-        try {
-            out.writeObject(message);
-            out.flush();
-            MenuLogger.escreverLog("Location: Mensagem enviada ao Proxy: " + message);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public Object receberMensagemDoProxy() {
-        try {
-            Object resposta = in.readObject();
-            MenuLogger.escreverLog("Location: Mensagem recebida do Proxy: " + resposta);
-            return resposta;
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public void fecharConexaoProxy() throws IOException {
-        in.close();
-        out.close();
-        socketProxy.close();
-        System.out.println("Conexão com o Proxy fechada");
     }
 
     private class ClienteThread implements Runnable {
@@ -111,32 +128,48 @@ public class LocationServerImpl {
         @Override
         public void run() {
             try (ObjectOutputStream outCliente = new ObjectOutputStream(cliente.getOutputStream());
-                 ObjectInputStream inCliente = new ObjectInputStream(cliente.getInputStream())) {
+                ObjectInputStream inCliente = new ObjectInputStream(cliente.getInputStream())) {
 
-                // Envia mensagem do cliente para o Proxy
-                enviarMensagemAoProxy("Novo cliente querendo conexão, envie localização");
-                Object resposta = receberMensagemDoProxy();
-                System.out.println("Localização recebida do Proxy: " + resposta);
-
-                if (resposta instanceof String) {
-                    String[] localizacao = ((String) resposta).split(":");
-                    String host = localizacao[0];
-                    int porta = Integer.parseInt(localizacao[1]);
-
-                    // Envia localização do Proxy para o cliente
-                    outCliente.writeObject(host + ":" + porta);
-                    MenuLogger.escreverLog("Location: Localização do Proxy enviada ao cliente: " + host + ":" + porta);
+                String mensagem = (String) inCliente.readObject();
+                System.out.println("Mensagem recebida do cliente: " + mensagem);
+                if (mensagem.equals("Novo cliente querendo conexão, envie localização")) {
+                    boolean proxyEncontrada = false;
+                    Random random = new Random();
+                    List<String> proxiesAtivas = new ArrayList<>(proxies);
+                    while (!proxyEncontrada && !proxiesAtivas.isEmpty()) {
+                        int index = random.nextInt(proxiesAtivas.size());
+                        String proxyName = proxiesAtivas.get(index);
+    
+                        if (verificarProxyAtiva(proxyName)) {
+                            ProxyRMI proxyRMI = (ProxyRMI) Naming.lookup(proxyName);
+                            String resposta = proxyRMI.receberMensagem("Novo cliente querendo conexão, envie localização");
+                            System.out.println("Localização recebida do Proxy: " + resposta);
+    
+                            // Envia localização do Proxy para o cliente
+                            outCliente.writeObject(resposta);
+                            outCliente.flush();
+                            System.out.println("Localização do Proxy enviada ao cliente: " + resposta);
+                            MenuLogger.escreverLog("Location: Localização do Proxy enviada ao cliente: " + resposta);
+                            proxyEncontrada = true;
+                        } else {
+                            System.out.println("Proxy escolhida está inativa: " + proxyName);
+                            MenuLogger.escreverLog("OPS! Uma Proxy ficou inativa! " + proxyName);
+                            proxiesAtivas.remove(proxyName);
+                            proxies.remove(proxyName);
+                            notificarProxies(proxyName, false);
+                        }
+                    }
+    
+                    if (!proxyEncontrada) {
+                        outCliente.writeObject("Nenhum proxy disponível no momento.");
+                        outCliente.flush();
+                    }
+                } else {
+                    System.out.println("Mensagem inesperada recebida do cliente: " + mensagem);
                 }
-
-            } catch (IOException e) {
+    
+            } catch (IOException | ClassNotFoundException | NotBoundException e) {
                 e.printStackTrace();
-            } finally {
-                try {
-                    cliente.close();
-                    MenuLogger.escreverLog("Location: Conexão com o cliente fechada: " + cliente.getInetAddress().getHostAddress());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
         }
     }

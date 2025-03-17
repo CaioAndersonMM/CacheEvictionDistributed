@@ -2,11 +2,12 @@ package Src.Server;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.rmi.RemoteException;
 
 import Src.Server.Impl.ProxyImpl;
 
 public class ProxyServer {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws RemoteException {
 
         try {
             new ProxyImpl(5005, InetAddress.getLocalHost().getHostAddress(), 5055);
